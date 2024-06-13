@@ -9,10 +9,6 @@ $(document).ready(function() {
         "mask": "99999-999",
         placeholder: "" 
     });
-    // money
-    $("#salary").inputmask('€ 999.999.999,99', {
-        numericInput: true
-    });
 });
 
 $("#zip").blur(function() {

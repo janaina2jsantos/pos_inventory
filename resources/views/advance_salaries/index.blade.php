@@ -14,7 +14,7 @@
 		    @endif
 			<div class="card-header flex-wrap border-0 pt-6 pb-0">
 				<div class="card-title">
-					<h3 class="card-label">Employees</h3>
+					<h3 class="card-label">Advance Salaries</h3>
 				</div>
 				<div class="card-toolbar">
 					<div class="dropdown dropdown-inline mr-2">
@@ -59,7 +59,7 @@
 						</div>
 					</div>
 		
-					<a href="{{ route('employees.create') }}" class="btn btn-primary font-weight-bolder">
+					<a href="{{ route('advance-salaries.create') }}" class="btn btn-primary font-weight-bolder">
 					<span class="svg-icon svg-icon-md">
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 							<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -68,7 +68,7 @@
 								<path d="M8.8012943,7.00241953 C9.83837775,5.20768121 11.7781543,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,12.2218457 18.7923188,14.1616223 16.9975805,15.1987057 C16.9991904,15.1326658 17,15.0664274 17,15 C17,10.581722 13.418278,7 9,7 C8.93357256,7 8.86733422,7.00080962 8.8012943,7.00241953 Z" fill="#000000" opacity="0.3" />
 							</g>
 						</svg>
-					</span>New Employee</a>
+					</span>New Advance Salary</a>
 				</div>
 			</div>
 			<!-- filters -->
@@ -85,14 +85,11 @@
 										</span>
 									</div>
 								</div>
+
 								<div class="col-md-6 my-2 my-md-0">
 									<div class="d-flex align-items-center">
-										<label class="mr-3 mb-0 d-none d-md-block">Status:</label>
-										<select class="form-control" id="kt_datatable_search_status">
-											<option value="">All</option>
-											<option value="0">Inactive</option>
-											<option value="1">Active</option>
-										</select>
+										<label class="mr-3 mb-0 d-none d-md-block">Month:</label>
+										<input type="month" class="form-control" id="kt_datatable_search_month" />
 									</div>
 								</div>
 							</div>
@@ -103,12 +100,12 @@
 					</div>
 				</div>
 				<!--datatable-->
-				<div class="datatable-employees datatable-bordered datatable-head-custom" id="tableEmployees"></div>
+				<div class="datatable-advance-salaries datatable-bordered datatable-head-custom" id="tableAdvanceSalaries"></div>
 			</div>
 		</div>
 	</div>
 @stop
 
 @section('scripts')
-    <script src="{{ asset('js/pages/employees/index.js') }}"></script>
+    <script src="{{ asset('js/pages/advance_salaries/index.js') }}"></script>
 @stop

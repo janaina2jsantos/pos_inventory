@@ -1,8 +1,8 @@
-function getEmployees() {
+function getAdvanceSalaries() {
     $.ajax({
         method: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: '/ajax/employees',
+        url: '/ajax/advance-salaries',
         dataType: 'json',
         success: function(response) {
             setUpTable(response);
@@ -14,7 +14,7 @@ function getEmployees() {
 }
 
 function setUpTable(data) {
-    var datatable = $('.datatable-employees').KTDatatable({
+    var datatable = $('.datatable-advance-salaries').KTDatatable({
         data: {
             source: data,
             map: function(raw) {
@@ -29,20 +29,17 @@ function setUpTable(data) {
             serverFiltering: true,
             serverSorting: true
         },
-        // layout definition
         layout:
         {
             scroll: true,
             footer: false
         },
-        // column sorting
         sortable: true,
         pagination: true,
         search: {
             input: $('#kt_datatable_search_query'),
             key: 'generalSearch'
         },
-        // columns definition
         columns: [
         {
             field: 'id',
@@ -54,68 +51,17 @@ function setUpTable(data) {
             textAlign: 'center',
         },
         {
-            field: 'name',
-            title: 'Name',
+            field: 'employee',
+            title: 'Employee',
         },
         {
-            field: 'email',
-            title: 'Email',
-        }, 
-        {
-            field: 'city',
-            title: 'City',
-            template: function(row) {
-                return row.city + ' - ' + row.state;
-            },
+            field: 'advance_salary',
+            title: 'Advance Salary',
         },
         {
-            field: 'role',
-            title: 'Role',
-            width: 95,
-        },
-        {
-            field: 'experience',
-            title: 'Experience',
-            width: 90,
-        },
-        // {
-        //     field: 'vacation',
-        //     title: 'Vacation',
-        //     width: 80,
-        // },
-        {
-            field: 'photo',
-            title: 'Photo',
-            width: 80,
-            template: function(row) {
-                if (row.photo) {
-                    return '<img src="' + row.photo + '" alt="Employee Photo" width="90%" />';
-                }
-                else {
-                    return '<img src="../../../dist/assets/img/users/default_avatar.jpg" alt="Employee Photo" width="85%" />';
-                }
-            },
-        },
-
-        {
-            field: 'status',
-            title: 'Status',
-            width: 70,
-            autoHide: false,
-            template: function(row) {
-                var status = {
-                    0: {
-                        'title': 'Inactive',
-                        'class': ' label-light-danger'
-                    },
-                    1: {
-                        'title': 'Active',
-                        'class': ' label-light-success'
-                    }
-                };
-                return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
-            },
-        },
+            field: 'month',
+            title: 'Month',
+        },        
         {
             field: 'Actions',
             title: 'Actions',
@@ -125,18 +71,7 @@ function setUpTable(data) {
             autoHide: false,
             template: function(row) {
                 return '\
-                    <a href="employees/'+row.id+'/show" class="btn btn-sm btn-clean btn-icon" title="Details">\
-                        <span class="svg-icon svg-icon-md">\
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
-                                    <polygon points="0 0 24 0 24 24 0 24"/>\
-                                    <path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>\
-                                    <path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero"/>\
-                                </g>\
-                            </svg>\
-                        </span>\
-                    </a>\
-                     <a href="employees/'+row.id+'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
+                    <a href="advance-salaries/'+row.id+'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -147,7 +82,7 @@ function setUpTable(data) {
                             </svg>\
                         </span>\
                     </a>\
-                    <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete" onclick="deleteEmployee('+row.id+');">\
+                    <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete" onclick="deleteAdvanceSalary('+row.id+');">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -164,9 +99,9 @@ function setUpTable(data) {
     });
 }
 
-function deleteEmployee(id) {
+function deleteAdvanceSalary(id) {
     Swal.fire({
-        title: 'Are you sure you want to delete this employee?',
+        title: 'Are you sure you want to delete this payment?',
         text: 'This action can not be undone!',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -177,7 +112,7 @@ function deleteEmployee(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/employees/"+id+"/delete",
+                url: "/advance-salaries/"+id+"/delete",
                 type: "DELETE",
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 data: {method: '_DELETE', submit: true}, 
@@ -186,7 +121,7 @@ function deleteEmployee(id) {
                     if (response.status) {
                         Swal.fire(
                             'Success!',
-                            'Employee deleted successfully.',
+                            response.message,
                             'success'
                         ).then(function() {
                             location.reload();
@@ -201,10 +136,9 @@ function deleteEmployee(id) {
                     }
                 },
                 error: function(xhr, status, error) {
-                    // console.log(xhr.responseText);
                     Swal.fire(
                         'Error!',
-                        'There was an error while deleting the employee.',
+                        'There was an error while deleting the payment.',
                         'error'
                     );
                 }
@@ -216,14 +150,14 @@ function deleteEmployee(id) {
 $('#kt_datatable_search_query').on('keyup', function() {
     var word = $(this).val();
     $.ajax({
-        url: '/ajax/employees',
+        url: '/ajax/advance-salaries',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'word': word},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-advance-salaries").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -237,17 +171,20 @@ $('#kt_datatable_search_query').on('keyup', function() {
     });
 });
 
-$('#kt_datatable_search_status').on('change', function() {
-    var status = $(this).val();
+$('#kt_datatable_search_month').on('change', function() {
+    var month = $(this).val();
     $.ajax({
-        url: '/ajax/employees',
+        url: '/ajax/advance-salaries',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data: {'status': status},
+        data: {'month': month},
         dataType: "json",
         success: function(response) {
+
+            console.log(response);
+            
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-advance-salaries").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -266,14 +203,14 @@ $('#kt_datatable_search_button').on('click', function() {
     var status = $('#kt_datatable_search_status').val();
 
     $.ajax({
-        url: "/ajax/employees",
+        url: "/ajax/advance-salaries",
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'search': true, 'word': word, 'status': status},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-advance-salaries").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -288,5 +225,5 @@ $('#kt_datatable_search_button').on('click', function() {
 });
 
 $(document).ready(function() {
-    getEmployees();
+    getAdvanceSalaries();
 });

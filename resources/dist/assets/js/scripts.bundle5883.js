@@ -1871,7 +1871,9 @@ var KTMenu = function(elementId, options) {
                     });
 
                     KTUtil.addClass(li, 'menu-item-open');
-
+                    KTUtil.removeClass(item.childNodes[5], 'fa-angle-right');
+                    KTUtil.addClass(item.childNodes[5], 'fa-angle-down');                   
+                  
                 } else {
                     KTUtil.slideUp(submenu, speed, function() {
                         Plugin.scrollToItem(item);
@@ -1880,6 +1882,8 @@ var KTMenu = function(elementId, options) {
                     });
 
                     KTUtil.removeClass(li, 'menu-item-open');
+                    KTUtil.removeClass(item.childNodes[5], 'fa-angle-down');
+                    KTUtil.addClass(item.childNodes[5], 'fa-angle-right');  
                 }
             }
         },

@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
+use App\Models\Customer;
 use Illuminate\Http\Request;
-use App\Http\BUS\EmployeeBUS;
-use App\Http\Requests\EmployeeRequest;
+use App\Http\BUS\CustomerBUS;
+use App\Http\Requests\CustomerRequest;
 
-class EmployeeController extends Controller
+class CustomerController extends Controller
 {
     public function __construct()
     {
-        $this->title = "Employees";
+        $this->title = "Customers";
     }
 
     public function index()
     {
-        return view("employees.index")
+        return view("customers.index")
             ->with('title', $this->title)
             ->with('breadTitle', $this->title);
     }
@@ -53,25 +53,24 @@ class EmployeeController extends Controller
         }
 
         // Get how many items there should be
-        $total = EmployeeBUS::getEmployees($request)->count();
-        $employees = EmployeeBUS::getEmployees($request)
+        $total = CustomerBUS::getCustomers($request)->count();
+        $customers = CustomerBUS::getCustomers($request)
             ->orderBy($order_field, $order_sort)
             ->get();
         $data = [];
 
-        if(!empty($employees)) {
-            foreach($employees as $employee) {
+        if(!empty($customers)) {
+            foreach($customers as $customer) {
                 $data[] = [
-                    'id' => $employee->id,
-                    'name' => $employee->name,
-                    'email' => $employee->email,
-                    'city' => $employee->city,
-                    'state' => $employee->state,
-                    'role' => $employee->role,
-                    'experience'  => $employee->experience,
-                    // 'vacation'  => $employee->vacation->format('M-Y'),
-                    'photo' => $employee->photo,
-                    'status'  => $employee->status
+                    'id' => $customer->id,
+                    'name' => $customer->name,
+                    'email' => $customer->email,
+                    'phone' => $customer->phone,
+                    'city' => $customer->city,
+                    'state' => $customer->state,
+                    'shop_name' => $customer->shop_name,
+                    'photo' => $customer->photo,
+                    'status'  => $customer->status
                 ];
             }
         }
@@ -94,32 +93,32 @@ class EmployeeController extends Controller
     public function create() 
     {
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
-            ['name' => 'Add Employee', 'url' => null],
+            ['name' => 'Data', 'url' => route('customers.index')],
+            ['name' => 'Add Customer', 'url' => null],
         ];
 
-        return view("employees.create")
+        return view("customers.create")
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
     }
 
-    public function store(EmployeeRequest $request) 
+    public function store(CustomerRequest $request) 
     {
-        EmployeeBUS::storeEmployee($request);
-        return redirect()->route("employees.index")->with("success", "Employee created successfully.");
+        CustomerBUS::storeCustomer($request);
+        return redirect()->route("customers.index")->with("success", "Customer created successfully.");
     }
 
     public function show($id) 
     { 
-        $employee = Employee::findOrFail($id); 
+        $customer = Customer::findOrFail($id); 
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
+            ['name' => 'Data', 'url' => route('customers.index')],
             ['name' => 'Basic Information', 'url' => null],
         ];
 
-        return view("employees.show")
-            ->with('employee', $employee)
+        return view("customers.show")
+            ->with('customer', $customer)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
@@ -127,38 +126,37 @@ class EmployeeController extends Controller
 
     public function edit($id) 
     { 
-        $employee = Employee::findOrFail($id); 
+        $customer = Customer::findOrFail($id); 
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
-            ['name' => 'Edit Employee', 'url' => null],
+            ['name' => 'Data', 'url' => route('customers.index')],
+            ['name' => 'Edit Customer', 'url' => null],
         ];
 
-        return view("employees.edit")
-            ->with('employee', $employee)
+        return view("customers.edit")
+            ->with('customer', $customer)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
     }
 
-    public function update(EmployeeRequest $request, $id) 
+    public function update(CustomerRequest $request, $id) 
     {
-        EmployeeBUS::updateEmployee($request, $id);
-        return redirect()->route("employees.index")->with("success", "Employee updated successfully.");
+        CustomerBUS::updateCustomer($request, $id);
+        return redirect()->route("customers.index")->with("success", "Customer updated successfully.");
     }
 
     public function destroy($id) 
     {
         try {
-            if (EmployeeBUS::destroyEmployee($id)) {  
-                return response()->json(["status" => true, "message" => "Employee deleted successfully."], 200);
+            if (CustomerBUS::destroyCustomer($id)) {  
+                return response()->json(["status" => true, "message" => "Customer deleted successfully."], 200);
             } 
             else {
                 return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
             }
         } 
         catch (Exception $ex) {
-            return response()->json(["status" => false, "message" => "An error occurred."], 500);
+            return response()->json(["status" => false, "message" => $ex->getMessage()], 500);
         }
     }
 }
-

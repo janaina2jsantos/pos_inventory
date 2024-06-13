@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
-use App\Http\BUS\EmployeeBUS;
-use App\Http\Requests\EmployeeRequest;
+use App\Http\BUS\SupplierBUS;
+use App\Http\Requests\SupplierRequest;
 
-class EmployeeController extends Controller
+class SupplierController extends Controller
 {
     public function __construct()
     {
-        $this->title = "Employees";
+        $this->title = "Suppliers";
     }
 
     public function index()
     {
-        return view("employees.index")
+        return view("suppliers.index")
             ->with('title', $this->title)
             ->with('breadTitle', $this->title);
     }
@@ -53,25 +53,23 @@ class EmployeeController extends Controller
         }
 
         // Get how many items there should be
-        $total = EmployeeBUS::getEmployees($request)->count();
-        $employees = EmployeeBUS::getEmployees($request)
+        $total = SupplierBUS::getSuppliers($request)->count();
+        $suppliers = SupplierBUS::getSuppliers($request)
             ->orderBy($order_field, $order_sort)
             ->get();
         $data = [];
 
-        if(!empty($employees)) {
-            foreach($employees as $employee) {
+        if(!empty($suppliers)) {
+            foreach($suppliers as $supplier) {
                 $data[] = [
-                    'id' => $employee->id,
-                    'name' => $employee->name,
-                    'email' => $employee->email,
-                    'city' => $employee->city,
-                    'state' => $employee->state,
-                    'role' => $employee->role,
-                    'experience'  => $employee->experience,
-                    // 'vacation'  => $employee->vacation->format('M-Y'),
-                    'photo' => $employee->photo,
-                    'status'  => $employee->status
+                    'id' => $supplier->id,
+                    'name' => $supplier->name,
+                    'email' => $supplier->email,
+                    'phone' => $supplier->phone,
+                    'city' => $supplier->city,
+                    'state' => $supplier->state,
+                    'type' => $supplier->type,
+                    'status'  => $supplier->status
                 ];
             }
         }
@@ -94,32 +92,32 @@ class EmployeeController extends Controller
     public function create() 
     {
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
-            ['name' => 'Add Employee', 'url' => null],
+            ['name' => 'Data', 'url' => route('suppliers.index')],
+            ['name' => 'Add Supplier', 'url' => null],
         ];
 
-        return view("employees.create")
+        return view("suppliers.create")
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
     }
 
-    public function store(EmployeeRequest $request) 
+    public function store(SupplierRequest $request) 
     {
-        EmployeeBUS::storeEmployee($request);
-        return redirect()->route("employees.index")->with("success", "Employee created successfully.");
+        SupplierBUS::storeSupplier($request);
+        return redirect()->route("suppliers.index")->with("success", "Supplier created successfully.");
     }
 
-    public function show($id) 
+     public function show($id) 
     { 
-        $employee = Employee::findOrFail($id); 
+        $supplier = Supplier::findOrFail($id); 
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
+            ['name' => 'Data', 'url' => route('suppliers.index')],
             ['name' => 'Basic Information', 'url' => null],
         ];
 
-        return view("employees.show")
-            ->with('employee', $employee)
+        return view("suppliers.show")
+            ->with('supplier', $supplier)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
@@ -127,38 +125,37 @@ class EmployeeController extends Controller
 
     public function edit($id) 
     { 
-        $employee = Employee::findOrFail($id); 
+        $supplier = Supplier::findOrFail($id); 
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
-            ['name' => 'Edit Employee', 'url' => null],
+            ['name' => 'Data', 'url' => route('suppliers.index')],
+            ['name' => 'Edit Supplier', 'url' => null],
         ];
 
-        return view("employees.edit")
-            ->with('employee', $employee)
+        return view("suppliers.edit")
+            ->with('supplier', $supplier)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
     }
 
-    public function update(EmployeeRequest $request, $id) 
+    public function update(SupplierRequest $request, $id) 
     {
-        EmployeeBUS::updateEmployee($request, $id);
-        return redirect()->route("employees.index")->with("success", "Employee updated successfully.");
+        SupplierBUS::updateSupplier($request, $id);
+        return redirect()->route("suppliers.index")->with("success", "Supplier updated successfully.");
     }
 
     public function destroy($id) 
     {
         try {
-            if (EmployeeBUS::destroyEmployee($id)) {  
-                return response()->json(["status" => true, "message" => "Employee deleted successfully."], 200);
+            if (SupplierBUS::destroySupplier($id)) {  
+                return response()->json(["status" => true, "message" => "Supplier deleted successfully."], 200);
             } 
             else {
                 return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
             }
         } 
         catch (Exception $ex) {
-            return response()->json(["status" => false, "message" => "An error occurred."], 500);
+            return response()->json(["status" => false, "message" => $ex->getMessage()], 500);
         }
     }
 }
-

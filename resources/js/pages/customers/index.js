@@ -1,8 +1,8 @@
-function getEmployees() {
+function getCustomers() {
     $.ajax({
         method: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: '/ajax/employees',
+        url: '/ajax/customers',
         dataType: 'json',
         success: function(response) {
             setUpTable(response);
@@ -14,7 +14,7 @@ function getEmployees() {
 }
 
 function setUpTable(data) {
-    var datatable = $('.datatable-employees').KTDatatable({
+    var datatable = $('.datatable-customers').KTDatatable({
         data: {
             source: data,
             map: function(raw) {
@@ -29,20 +29,17 @@ function setUpTable(data) {
             serverFiltering: true,
             serverSorting: true
         },
-        // layout definition
         layout:
         {
             scroll: true,
             footer: false
         },
-        // column sorting
         sortable: true,
         pagination: true,
         search: {
             input: $('#kt_datatable_search_query'),
             key: 'generalSearch'
         },
-        // columns definition
         columns: [
         {
             field: 'id',
@@ -60,7 +57,11 @@ function setUpTable(data) {
         {
             field: 'email',
             title: 'Email',
-        }, 
+        },
+        {
+            field: 'phone',
+            title: 'Phone',
+        },
         {
             field: 'city',
             title: 'City',
@@ -69,34 +70,23 @@ function setUpTable(data) {
             },
         },
         {
-            field: 'role',
-            title: 'Role',
+            field: 'shop_name',
+            title: 'Shop Name',
             width: 95,
         },
-        {
-            field: 'experience',
-            title: 'Experience',
-            width: 90,
-        },
-        // {
-        //     field: 'vacation',
-        //     title: 'Vacation',
-        //     width: 80,
-        // },
         {
             field: 'photo',
             title: 'Photo',
             width: 80,
             template: function(row) {
                 if (row.photo) {
-                    return '<img src="' + row.photo + '" alt="Employee Photo" width="90%" />';
+                    return '<img src="' + row.photo + '" alt="Customer Photo" width="90%" />';
                 }
                 else {
-                    return '<img src="../../../dist/assets/img/users/default_avatar.jpg" alt="Employee Photo" width="85%" />';
+                    return '<img src="../../../dist/assets/img/users/default_avatar.jpg" alt="Customer Photo" width="85%" />';
                 }
             },
         },
-
         {
             field: 'status',
             title: 'Status',
@@ -125,7 +115,7 @@ function setUpTable(data) {
             autoHide: false,
             template: function(row) {
                 return '\
-                    <a href="employees/'+row.id+'/show" class="btn btn-sm btn-clean btn-icon" title="Details">\
+                    <a href="customers/'+row.id+'/show" class="btn btn-sm btn-clean btn-icon" title="Details">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -136,7 +126,7 @@ function setUpTable(data) {
                             </svg>\
                         </span>\
                     </a>\
-                     <a href="employees/'+row.id+'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
+                    <a href="customers/'+row.id+'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -147,7 +137,7 @@ function setUpTable(data) {
                             </svg>\
                         </span>\
                     </a>\
-                    <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete" onclick="deleteEmployee('+row.id+');">\
+                    <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete" onclick="deleteCustomer('+row.id+');">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -164,9 +154,9 @@ function setUpTable(data) {
     });
 }
 
-function deleteEmployee(id) {
+function deleteCustomer(id) {
     Swal.fire({
-        title: 'Are you sure you want to delete this employee?',
+        title: 'Are you sure you want to delete this customer?',
         text: 'This action can not be undone!',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -177,7 +167,7 @@ function deleteEmployee(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/employees/"+id+"/delete",
+                url: "/customers/"+id+"/delete",
                 type: "DELETE",
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 data: {method: '_DELETE', submit: true}, 
@@ -186,7 +176,7 @@ function deleteEmployee(id) {
                     if (response.status) {
                         Swal.fire(
                             'Success!',
-                            'Employee deleted successfully.',
+                            'Customer deleted successfully.',
                             'success'
                         ).then(function() {
                             location.reload();
@@ -201,10 +191,9 @@ function deleteEmployee(id) {
                     }
                 },
                 error: function(xhr, status, error) {
-                    // console.log(xhr.responseText);
                     Swal.fire(
                         'Error!',
-                        'There was an error while deleting the employee.',
+                        'There was an error while deleting the customer.',
                         'error'
                     );
                 }
@@ -216,14 +205,14 @@ function deleteEmployee(id) {
 $('#kt_datatable_search_query').on('keyup', function() {
     var word = $(this).val();
     $.ajax({
-        url: '/ajax/employees',
+        url: '/ajax/customers',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'word': word},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-customers").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -240,14 +229,14 @@ $('#kt_datatable_search_query').on('keyup', function() {
 $('#kt_datatable_search_status').on('change', function() {
     var status = $(this).val();
     $.ajax({
-        url: '/ajax/employees',
+        url: '/ajax/customers',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'status': status},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-customers").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -266,14 +255,14 @@ $('#kt_datatable_search_button').on('click', function() {
     var status = $('#kt_datatable_search_status').val();
 
     $.ajax({
-        url: "/ajax/employees",
+        url: "/ajax/customers",
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'search': true, 'word': word, 'status': status},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-customers").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -288,5 +277,5 @@ $('#kt_datatable_search_button').on('click', function() {
 });
 
 $(document).ready(function() {
-    getEmployees();
+    getCustomers();
 });

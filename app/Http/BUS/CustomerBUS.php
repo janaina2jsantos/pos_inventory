@@ -2,19 +2,19 @@
 
 namespace App\Http\BUS;
 
-use App\Models\Employee;
+use App\Models\Customer;
 use Illuminate\Http\Request;
-use App\Http\Requests\EmployeeRequest;
+use App\Http\Requests\CustomerRequest;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 
-class EmployeeBUS
+class CustomerBUS
 {
-	public static function getEmployees(Request $request) {
-		$employees = new Employee();
+	public static function getCustomers(Request $request) {
+		$customers = new Customer();
 		if ($request->has("search")) {
 			if ($request->word != "" || $request->status != "") {
-				$employees = $employees->where("name", "LIKE", "%{$request->word}%")
+				$customers = $customers->where("name", "LIKE", "%{$request->word}%")
 					->where("status", "=", $request->status);
 			}
 			else {
@@ -23,36 +23,34 @@ class EmployeeBUS
 		}
 		if ($request->has("status")) {
 			if ($request->status != "") {
-				$employees = $employees->where("status", "=", $request->status);
+				$customers = $customers->where("status", "=", $request->status);
 			}
 		}
 		if ($request->has("word")) {
-			$employees = $employees->where('name', 'LIKE', '%' . $request->word . '%')
+			$customers = $customers->where('name', 'LIKE', '%' . $request->word . '%')
 				->orWhere('email', 'LIKE', '%' . $request->word . '%')
 				->orWhere('city', 'LIKE', '%' . $request->word . '%')
-				->orWhere('role', 'LIKE', '%' . $request->word . '%');
+				->orWhere('shop_name', 'LIKE', '%' . $request->word . '%');
 		}
-		return $employees;
+		return $customers;
 	}
 
-	public static function storeEmployee(EmployeeRequest $request) 
+	public static function storeCustomer(CustomerRequest $request) 
 	{
-		$salary = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->salary)));
-
 		// upload
 		if ((isset($_FILES['photo'])) && ($_FILES['photo']['type'] != "")) {
-			if(!is_dir("dist/assets/img/employees/")) {
-				mkdir("dist/assets/img/employees/");
+			if(!is_dir("dist/assets/img/customers/")) {
+				mkdir("dist/assets/img/customers/");
 			}
 
 			$file = $_FILES['photo'];
 			if ($file['type'] == 'image/jpeg' || $file['type'] == 'image/jpg' || $file['type'] == 'image/png') {
-				$uploaded = "dist/assets/img/employees/". $_FILES["photo"]["name"]; 
+				$uploaded = "dist/assets/img/customers/". $_FILES["photo"]["name"]; 
 				move_uploaded_file($_FILES['photo']['tmp_name'], $uploaded);
 			}
 		}
 
-		$employee = Employee::create([
+		$customer = Customer::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -63,73 +61,72 @@ class EmployeeBUS
             'neighborhood' => $request->neighborhood,
             'city' => $request->city,
             'state' => $request->state,
-            'role' => $request->role,
-            'experience' => $request->experience,
-            'nid_no' => $request->nidno,
-            'salary' => $salary,
-            'vacation' => $request->vacation,
+            'shop_name' => $request->shop_name,
+            'account_holder' => $request->account_holder,
+            'account_number' => $request->account_number,
+            'bank_name' => $request->bank_name,
+            'bank_branch' => $request->bank_branch,
             'photo' => isset($uploaded) ? "/".$uploaded : null,
             'status' => $request->status
         ]);
 
-		return $employee;
+		return $customer;
 	}
 	
-	public static function updateEmployee(EmployeeRequest $request, $id) 
+	public static function updateCustomer(CustomerRequest $request, $id) 
 	{
-		$salary = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->salary)));
-		$employee = Employee::findOrFail($id);
+		$customer = Customer::findOrFail($id);
 
 		// upload
 		if ((isset($_FILES['photo'])) && ($_FILES['photo']['type'] != "")) {
-	        if ($employee->photo) {
+	        if ($customer->photo) {
 				// delete the old photo if it exists
-	        	if (\File::exists(public_path($employee->photo))) {
-	        		\File::delete(public_path($employee->photo));
+	        	if (\File::exists(public_path($customer->photo))) {
+	        		\File::delete(public_path($customer->photo));
 	        	}
 	        }
 
 			$file = $_FILES['photo'];
 			if ($file['type'] == 'image/jpeg' || $file['type'] == 'image/jpg' || $file['type'] == 'image/png') {
-				$uploaded = "dist/assets/img/employees/". $_FILES["photo"]["name"]; 
+				$uploaded = "dist/assets/img/customers/". $_FILES["photo"]["name"]; 
 				move_uploaded_file($_FILES['photo']['tmp_name'], $uploaded);
 			}
 		}
 
-		$employee->update([
+		$customer->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'phone' => $request->input('phone'),
             'zip' => $request->input('zip'),
             'address' => $request->input('street'),
             'number' => $request->input('number'),
-            'complement' => isset($request->complement) ? $request->input('complement') : $employee->complement,
+            'complement' => isset($request->complement) ? $request->input('complement') : $customer->complement,
             'neighborhood' => $request->input('neighborhood'),
             'city' => $request->input('city'),
             'state' => $request->input('state'),
-            'role' => $request->input('role'),
-            'experience' => $request->input('experience'),
-            'nid_no' => $request->input('nidno'),
-            'salary' => $salary,
-            'vacation' => $request->input('vacation'),
-            'photo' => isset($uploaded) ? "/" . $uploaded : $employee->photo,
+            'shop_name' => $request->input('shop_name'),
+            'account_holder' => $request->input('account_holder'),
+            'account_number' => $request->input('account_number'),
+            'bank_name' => $request->input('bank_name'),
+            'bank_branch' => $request->input('bank_branch'),
+            'photo' => isset($uploaded) ? "/" . $uploaded : $customer->photo,
             'status' => $request->input('status')
         ]);
 
-		return $employee;
+		return $customer;
 	}
 
-	public static function destroyEmployee($id) 
+	public static function destroyCustomer($id) 
 	{
 		try {
-            $employee = Employee::findOrFail($id);
-			// delete the employee photo if it exists
-            if ($employee->photo) {
-	        	if (\File::exists(public_path($employee->photo))) {
-	        		\File::delete(public_path($employee->photo));
+            $customer = Customer::findOrFail($id);
+			// delete the customer photo if it exists
+            if ($customer->photo) {
+	        	if (\File::exists(public_path($customer->photo))) {
+	        		\File::delete(public_path($customer->photo));
 	        	}
 	        }
-            $employee->delete();
+            $customer->delete();
             return true;
         }
         catch(Exception $ex) {
