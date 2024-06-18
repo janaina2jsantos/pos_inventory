@@ -176,7 +176,7 @@ function deleteCustomer(id) {
                     if (response.status) {
                         Swal.fire(
                             'Success!',
-                            'Customer deleted successfully.',
+                            response.message,
                             'success'
                         ).then(function() {
                             location.reload();

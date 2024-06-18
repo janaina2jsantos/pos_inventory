@@ -54,57 +54,18 @@ Route::group(['middleware' => 'auth'], function() {
     Route::put('/suppliers/{id}/edit', 'SupplierController@update')->name('suppliers.update');
     Route::delete('/suppliers/{id}/delete', 'SupplierController@destroy')->name('suppliers.destroy');
 
-    // advance-salaries 
-    Route::get('/advance-salaries', 'AdvanceSalaryController@index')->name('advance-salaries.index');
-    Route::get('/ajax/advance-salaries', 'AdvanceSalaryController@indexAjax')->name('advance-salaries.index.ajax');
-    Route::get('/advance-salaries/create', 'AdvanceSalaryController@create')->name('advance-salaries.create');
-    Route::post('/advance-salaries/create', 'AdvanceSalaryController@store')->name('advance-salaries.store');
-
-    Route::get('/advance-salaries/{id}/edit', 'AdvanceSalaryController@edit')->name('advance-salaries.edit');
-    Route::put('/advance-salaries/{id}/edit', 'AdvanceSalaryController@update')->name('advance-salaries.update');
-
-    Route::delete('/advance-salaries/{id}/delete', 'AdvanceSalaryController@destroy')->name('advance-salaries.destroy');
-
+    // salaries and advances
+    Route::get('/advance-salaries', 'SalaryController@index')->name('advance-salaries.index');
+    Route::get('/ajax/advance-salaries', 'SalaryController@indexAjax')->name('advance-salaries.index.ajax');
+    Route::get('/advance-salaries/create', 'SalaryController@create')->name('advance-salaries.create');
+    Route::post('/advance-salaries/create', 'SalaryController@store')->name('advance-salaries.store');
+    Route::get('/advance-salaries/{id}/edit', 'SalaryController@edit')->name('advance-salaries.edit');
+    Route::put('/advance-salaries/{id}/edit', 'SalaryController@update')->name('advance-salaries.update');
+    Route::delete('/advance-salaries/{id}/delete', 'SalaryController@destroy')->name('advance-salaries.destroy');
+    Route::get('/pay-salary', 'SalaryController@paySalary')->name('pay.salary');
+    Route::get('/ajax/pay-salary', 'SalaryController@paySalaryAjax')->name('pay.salary.ajax');
+    Route::post('/ajax/pay-salary/{id}', 'SalaryController@paySalaryToEmployeeAjax')->name('pay.salary.employee.ajax');
 });
 
-// 00
-
-
-
-// Route::get('/teste', function() {
-//     // $a = [5, 6, 7];
-//     // $b = [3, 6, 10];
-
-//     $a = [17, 28, 30];
-//     $b = [99, 16, 8];
-
-//     print_r(compareTriplets($a, $b));
-// });
-
-// function compareTriplets($a, $b) {
-//     $challengers = ['Alice' => 0, 'Bob' => 0];
-    
-//     foreach($a as $key => $value) {
-//         if($a[$key] > $b[$key]) {
-//             $challengers['Alice'] += 1;  
-//         }
-//         elseif($a[$key] == $b[$key]) {
-//            continue;
-//         }
-//         else {
-//             $challengers['Bob'] += 1;  
-//         }
-//     }
-//     return array_values($challengers);
-// }
-
-
 require __DIR__.'/auth.php';
-
-
-
-
-
-
-
 

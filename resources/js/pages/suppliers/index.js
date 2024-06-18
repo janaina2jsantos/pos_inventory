@@ -177,7 +177,7 @@ function deleteSupplier(id) {
                     if (response.status) {
                         Swal.fire(
                             'Success!',
-                            'Supplier deleted successfully.',
+                            response.message,
                             'success'
                         ).then(function() {
                             location.reload();

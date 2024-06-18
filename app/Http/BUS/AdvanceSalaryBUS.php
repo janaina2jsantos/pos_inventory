@@ -3,6 +3,7 @@
 namespace App\Http\BUS;
 
 use App\Models\AdvanceSalary;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdvanceSalaryRequest;
 use Exception;
@@ -21,31 +22,34 @@ class AdvanceSalaryBUS
 				die();
 			}
 		}
-
 		if ($request->has("month")) {
 			$advSalaries = $advSalaries->where("month", "LIKE", "%{$request->month}%");
 		}
-
 		if ($request->has("word")) {
 			$advSalaries = $advSalaries->whereHas("employee", function($w) use($request) {
                 $w->where("name", "LIKE", "%{$request->word}%");
             });
 		}
-
 		return $advSalaries;
 	}
 
 	public static function storeAdvanceSalary(AdvanceSalaryRequest $request) 
 	{
 		$payment = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->advance_salary)));
-		
-		$advSalary = AdvanceSalary::create([
-            'employee_id' => $request->employee_id,
-            'advance_salary' => $payment,
-            'month' => $request->month
-        ]);
+		$hasAdvSalary = AdvanceSalary::where("month", "LIKE", "%{$request->month}%")
+			->where("employee_id", $request->employee_id)
+			->first();
 
-		return $advSalary;
+		// checking if employee already has an advance registered in the provided month
+		if ($hasAdvSalary === null) {
+			$advSalary = AdvanceSalary::create([
+	            'employee_id' => $request->employee_id,
+	            'advance_salary' => $payment,
+	            'month' => $request->month
+	        ]);
+
+			return $advSalary;
+		}
 	}
 	
 	public static function updateAdvanceSalary(AdvanceSalaryRequest $request, $id) 

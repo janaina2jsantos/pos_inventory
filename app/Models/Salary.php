@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AdvanceSalary extends Model
+class Salary extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['employee_id', 'month', 'advance_salary'];
+    protected $fillable = ['employee_id', 'month', 'paid_amount', 'status'];
 
     protected $dates = ['month'];
 

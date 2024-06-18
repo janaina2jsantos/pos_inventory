@@ -27,7 +27,7 @@ php artisan db:seed --class=UserSeeder
 php artisan db:seed --class=EmployeeSeeder
 
 ```
-- Don't forget to run the commands npm install and npm run dev.
+- Don't forget to run commands like npm install and npm run dev.
 - Enjoy the project!
 
 ## License

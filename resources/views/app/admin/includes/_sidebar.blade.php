@@ -180,6 +180,24 @@
 									<span class="menu-text">Add Advance Salary</span>
 								</a>
 							</li>
+
+							<li class="menu-item" aria-haspopup="true">
+								<a href="{{ route('pay.salary') }}" class="menu-link">
+									<i class="menu-bullet menu-bullet-dot">
+										<span></span>
+									</i>
+									<span class="menu-text">Pay Salary</span>
+								</a>
+							</li>
+
+							<li class="menu-item" aria-haspopup="true">
+								<a href="#" class="menu-link">
+									<i class="menu-bullet menu-bullet-dot">
+										<span></span>
+									</i>
+									<span class="menu-text">Last Month Salary</span>
+								</a>
+							</li>
 						</ul>
 					</div>
 				</li>

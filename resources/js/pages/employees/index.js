@@ -78,11 +78,6 @@ function setUpTable(data) {
             title: 'Experience',
             width: 90,
         },
-        // {
-        //     field: 'vacation',
-        //     title: 'Vacation',
-        //     width: 80,
-        // },
         {
             field: 'photo',
             title: 'Photo',
@@ -96,7 +91,6 @@ function setUpTable(data) {
                 }
             },
         },
-
         {
             field: 'status',
             title: 'Status',
@@ -186,7 +180,7 @@ function deleteEmployee(id) {
                     if (response.status) {
                         Swal.fire(
                             'Success!',
-                            'Employee deleted successfully.',
+                            response.message,
                             'success'
                         ).then(function() {
                             location.reload();
