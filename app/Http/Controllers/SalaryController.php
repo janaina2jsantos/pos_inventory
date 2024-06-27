@@ -6,9 +6,11 @@ use App\Models\Salary;
 use App\Models\AdvanceSalary;
 use App\Models\Employee;
 use App\Http\BUS\AdvanceSalaryBUS;
+use App\Http\BUS\SalaryBUS;
 use App\Http\BUS\EmployeeBUS;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdvanceSalaryRequest;
+use DB;
 
 class SalaryController extends Controller
 {
@@ -26,6 +28,7 @@ class SalaryController extends Controller
 
     public function indexAjax(Request $request)
     {
+        $prevMonth = date("Y-m", strtotime('-1 month'));
         $page = 1;
         $per_page = 10;
 
@@ -70,7 +73,8 @@ class SalaryController extends Controller
                     'employee_salary' => '$'.$adv->employee->salary,
                     'advance_salary' => '$'.$adv->advance_salary, 
                     'photo' => $adv->employee->photo,
-                    'month' => $adv->month->format('F')
+                    'isPaid' => $adv->employee->salaries()->where("employee_id", $adv->employee->id)->where("month", "LIKE", "%{$prevMonth}%")->where("status", 1)->pluck('month'),
+                    'month' => $adv->month
                 ];
             }
         }
@@ -107,10 +111,11 @@ class SalaryController extends Controller
 
     public function store(AdvanceSalaryRequest $request) 
     {
+        // dd($request->all());
         $rowCount = AdvanceSalaryBUS::storeAdvanceSalary($request);
-        
+
         if ($rowCount) {
-            return redirect()->route("advance-salaries.index")->with("success", "Advance paid successfully.");
+            return redirect()->route("advance-salaries.index")->with("success", "Advance successfully paid.");
         }
         else {
             return redirect()->back()->withErrors(["error" => "Advance already paid in this month for this employee."]);
@@ -119,6 +124,7 @@ class SalaryController extends Controller
 
     public function edit($id) 
     { 
+        $prevMonth = date("Y-m", strtotime('-1 month'));
         $advSalary = AdvanceSalary::findOrFail($id); 
         $employees = Employee::where('status', 1)->get();
         $breadItems = [
@@ -126,9 +132,18 @@ class SalaryController extends Controller
             ['name' => 'Edit Advance Salary Provide', 'url' => null],
         ];
 
+        $isPaid = DB::table('salaries')
+            ->select('salaries.month')
+            ->join('employees', 'salaries.employee_id', '=', 'employees.id')
+            ->where('salaries.employee_id', $advSalary->employee->id)
+            ->where("salaries.month", "LIKE", "%{$prevMonth}%")
+            ->where('salaries.status', 1)
+            ->first();
+
         return view("advance_salaries.edit")
             ->with('advSalary', $advSalary)
             ->with('employees', $employees)
+            ->with('isPaid', date('Y-m', strtotime($isPaid->month)))
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
@@ -137,14 +152,14 @@ class SalaryController extends Controller
     public function update(AdvanceSalaryRequest $request, $id) 
     {
         AdvanceSalaryBUS::updateAdvanceSalary($request, $id);
-        return redirect()->route("advance-salaries.index")->with("success", "Payment updated successfully.");
+        return redirect()->route("advance-salaries.index")->with("success", "Advance successfully updated.");
     }
 
     public function destroy($id) 
     {
         try {
             if (AdvanceSalaryBUS::destroyAdvanceSalary($id)) {  
-                return response()->json(["status" => true, "message" => "Payment deleted successfully."], 200);
+                return response()->json(["status" => true, "message" => "Advance successfully deleted."], 200);
             } 
             else {
                 return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
@@ -152,6 +167,19 @@ class SalaryController extends Controller
         } 
         catch (Exception $ex) {
             return response()->json(["status" => false, "message" => $ex->getMessage()], 500);
+        }
+    }
+
+    public function recurringAdvanceAjax($id) 
+    {
+        $rowCount = AdvanceSalaryBUS::recurringAdvanceSalary($id);
+        
+        if ($rowCount) {
+            return response()->json(["status" => true, "message" => "Advance successfully paid."], 200);
+
+        }
+        else {
+            return response()->json(["status" => false, "message" => "Advance already paid in this month for this employee."], 400); 
         }
     }
 
@@ -195,21 +223,35 @@ class SalaryController extends Controller
         }
 
         // Get how many items there should be
-        $total = EmployeeBUS::getEmployees($request)->count();
+        $total = EmployeeBUS::getEmployees($request)
+            ->where('status', 1)
+            ->count();
         $employees = EmployeeBUS::getEmployees($request)
+            ->where('status', 1)
             ->orderBy($order_field, $order_sort)
             ->get();
         $data = [];
 
+        if ($request->has("word")) {
+            $employees = Employee::whereHas('salaries', function($q) use($request) {
+                $q->where("name", "LIKE", "%{$request->word}%");
+            })->get();
+        }
+        if ($request->has("month")) {
+            $employees = Employee::whereHas('salaries', function($q) use($request) {
+                $q->where("month", "LIKE", "%{$request->month}%");
+            })->get();
+        }
+
         if(!empty($employees)) {
-            foreach($employees->where('status', 1) as $employee) {
+            foreach($employees as $employee) {
                 $data[] = [
                     'id' => $employee->id,
                     'employee' => $employee->name,
                     'salary' => '$'.$employee->salary,
                     'month' => date('F', strtotime('-1 month')),
                     'advance' => $employee->advanceSalaries()->where("month", "LIKE", "%{$prevMonth}%")->pluck('advance_salary'),
-                    'isPaid' => $employee->salaries()->where("employee_id", $employee->id)->where("month", "LIKE", "%{$prevMonth}%")->where("status", 1)->first(),
+                    'isPaid' => $employee->salaries()->where("employee_id", $employee->id)->where("month", "LIKE", "%{$prevMonth}%")->where("status", 1)->get(),
                     'photo' => $employee->photo
                 ];
             }

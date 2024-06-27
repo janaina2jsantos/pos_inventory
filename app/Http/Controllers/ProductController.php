@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
-use App\Http\BUS\EmployeeBUS;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Supplier;
+use App\Http\BUS\ProductBUS;
 use Illuminate\Http\Request;
-use App\Http\Requests\EmployeeRequest;
+use App\Http\Requests\ProductRequest;
 
-class EmployeeController extends Controller
+class ProductController extends Controller
 {
     public function __construct()
     {
-        $this->title = "Employees";
+        $this->title = "Products";
     }
 
     public function index()
     {
-        return view("employees.index")
+        return view("products.index")
             ->with('title', $this->title)
             ->with('breadTitle', $this->title);
     }
@@ -53,24 +55,17 @@ class EmployeeController extends Controller
         }
 
         // Get how many items there should be
-        $total = EmployeeBUS::getEmployees($request)->count();
-        $employees = EmployeeBUS::getEmployees($request)
+        $total = ProductBUS::getProducts($request)->count();
+        $products = ProductBUS::getProducts($request)
             ->orderBy($order_field, $order_sort)
             ->get();
         $data = [];
 
-        if(!empty($employees)) {
-            foreach($employees as $employee) {
+        if(!empty($products)) {
+            foreach($products as $product) {
                 $data[] = [
-                    'id' => $employee->id,
-                    'name' => $employee->name,
-                    'email' => $employee->email,
-                    'city' => $employee->city,
-                    'state' => $employee->state,
-                    'role' => $employee->role,
-                    'experience'  => $employee->experience,
-                    'photo' => $employee->photo,
-                    'status'  => $employee->status
+                    'id' => $product->id,
+                    'name' => $product->name,
                 ];
             }
         }
@@ -92,33 +87,37 @@ class EmployeeController extends Controller
 
     public function create() 
     {
+        $categories = Category::all();
+        $suppliers = Supplier::where('status', 1)->get();
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
-            ['name' => 'Add Employee', 'url' => null],
+            ['name' => 'Data', 'url' => route('products.index')],
+            ['name' => 'Add Product', 'url' => null],
         ];
 
-        return view("employees.create")
+        return view("products.create")
+            ->with('categories', $categories)
+            ->with('suppliers', $suppliers)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
     }
 
-    public function store(EmployeeRequest $request) 
+    public function store(ProductRequest $request) 
     {
-        EmployeeBUS::storeEmployee($request);
-        return redirect()->route("employees.index")->with("success", "Employee successfully created.");
+        ProductBUS::storeProduct($request);
+        return redirect()->route("products.index")->with("success", "Product successfully created.");
     }
 
     public function show($id) 
     { 
-        $employee = Employee::findOrFail($id); 
+        $product = Product::findOrFail($id); 
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
+            ['name' => 'Data', 'url' => route('products.index')],
             ['name' => 'Basic Information', 'url' => null],
         ];
 
-        return view("employees.show")
-            ->with('employee', $employee)
+        return view("products.show")
+            ->with('product', $product)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
@@ -126,38 +125,37 @@ class EmployeeController extends Controller
 
     public function edit($id) 
     { 
-        $employee = Employee::findOrFail($id); 
+        $product = Product::findOrFail($id); 
         $breadItems = [
-            ['name' => 'Data', 'url' => route('employees.index')],
-            ['name' => 'Edit Employee', 'url' => null],
+            ['name' => 'Data', 'url' => route('products.index')],
+            ['name' => 'Edit Product', 'url' => null],
         ];
 
-        return view("employees.edit")
-            ->with('employee', $employee)
+        return view("products.edit")
+            ->with('product', $product)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
     }
 
-    public function update(EmployeeRequest $request, $id) 
+    public function update(ProductRequest $request, $id) 
     {
-        EmployeeBUS::updateEmployee($request, $id);
-        return redirect()->route("employees.index")->with("success", "Employee successfully updated.");
+        ProductBUS::updateProduct($request, $id);
+        return redirect()->route("products.index")->with("success", "Product successfully updated.");
     }
 
     public function destroy($id) 
     {
         try {
-            if (EmployeeBUS::destroyEmployee($id)) {  
-                return response()->json(["status" => true, "message" => "Employee successfully deleted."], 200);
+            if (ProductBUS::destroyProduct($id)) {  
+                return response()->json(["status" => true, "message" => "Product successfully deleted."], 200);
             } 
             else {
                 return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
             }
         } 
         catch (Exception $ex) {
-            return response()->json(["status" => false, "message" => "An error occurred."], 500);
+            return response()->json(["status" => false, "message" => $ex->getMessage()], 500);
         }
     }
 }
-

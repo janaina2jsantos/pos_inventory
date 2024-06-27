@@ -7,6 +7,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdvanceSalaryRequest;
 use Exception;
+use DateTime;
 
 class AdvanceSalaryBUS
 {
@@ -14,8 +15,8 @@ class AdvanceSalaryBUS
 		$advSalaries = new AdvanceSalary();
 		if ($request->has("search")) {
 			if ($request->word != "") {
-				$advSalaries = $advSalaries->whereHas("employee", function($w) use($request) {
-	                $w->where("name", "LIKE", "%{$request->word}%");
+				$advSalaries = $advSalaries->whereHas("employee", function($q) use($request) {
+	                $q->where("name", "LIKE", "%{$request->word}%");
 	            });
 			}
 			else {
@@ -26,8 +27,8 @@ class AdvanceSalaryBUS
 			$advSalaries = $advSalaries->where("month", "LIKE", "%{$request->month}%");
 		}
 		if ($request->has("word")) {
-			$advSalaries = $advSalaries->whereHas("employee", function($w) use($request) {
-                $w->where("name", "LIKE", "%{$request->word}%");
+			$advSalaries = $advSalaries->whereHas("employee", function($q) use($request) {
+                $q->where("name", "LIKE", "%{$request->word}%");
             });
 		}
 		return $advSalaries;
@@ -76,5 +77,28 @@ class AdvanceSalaryBUS
         catch(Exception $ex) {
             return false;
         }
+	}
+	
+	public static function recurringAdvanceSalary($id) 
+	{
+		$advSalary = AdvanceSalary::findOrFail($id);
+        $date = new DateTime($advSalary->month);
+        $date->modify('+1 month');
+        $month = $date->format('Y-m');
+
+        $hasAdvSalary = AdvanceSalary::where("month", "LIKE", "%{$month}%")
+			->where("employee_id", $advSalary->employee_id)
+			->first();
+
+		// checking if employee already has an advance registered in the provided month
+		if ($hasAdvSalary === null) {
+			$advSalary = AdvanceSalary::create([
+	            'employee_id' => $advSalary->employee_id,
+	            'advance_salary' => $advSalary->advance_salary,
+	            'month' => $month
+	        ]);
+
+			return $advSalary;
+		}
 	}
 }

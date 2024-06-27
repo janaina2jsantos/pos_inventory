@@ -109,7 +109,7 @@ function setUpTable(data) {
                 }
                 else {
                     return '\
-                        <button class="btn btn-primary" disabled><i class="fa-solid fa-check"></i> &nbsp;Paid</button>\
+                        <button class="btn btn-sm btn-secondary btn-paid" disabled><i class="fa-solid fa-check"></i> &nbsp;Paid</button>\
                     ';
                 }
             },
@@ -167,14 +167,14 @@ function paySalaryToEmployee(id) {
 $('#kt_datatable_search_query').on('keyup', function() {
     var word = $(this).val();
     $.ajax({
-        url: '/ajax/advance-salaries',
+        url: '/ajax/pay-salary',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'word': word},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-advance-salaries").KTDatatable({});
+                var datatable = $(".datatable-pay-salary").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -191,14 +191,14 @@ $('#kt_datatable_search_query').on('keyup', function() {
 $('#kt_datatable_search_month').on('change', function() {
     var month = $(this).val();
     $.ajax({
-        url: '/ajax/advance-salaries',
+        url: '/ajax/pay-salary',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'month': month},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-advance-salaries").KTDatatable({});
+                var datatable = $(".datatable-pay-salary").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -214,17 +214,16 @@ $('#kt_datatable_search_month').on('change', function() {
 
 $('#kt_datatable_search_button').on('click', function() {
     var word = $('#kt_datatable_search_query').val();
-    var status = $('#kt_datatable_search_status').val();
-    
+    var month = $('#kt_datatable_search_month').val();
     $.ajax({
-        url: "/ajax/advance-salaries",
+        url: "/ajax/pay-salary",
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data: {'search': true, 'word': word, 'status': status},
+        data: {'search': true, 'word': word, 'month': month},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-advance-salaries").KTDatatable({});
+                var datatable = $(".datatable-pay-salary").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }

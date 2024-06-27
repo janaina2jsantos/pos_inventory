@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Supplier;
-use Illuminate\Http\Request;
 use App\Http\BUS\SupplierBUS;
+use Illuminate\Http\Request;
 use App\Http\Requests\SupplierRequest;
 
 class SupplierController extends Controller
@@ -105,7 +105,7 @@ class SupplierController extends Controller
     public function store(SupplierRequest $request) 
     {
         SupplierBUS::storeSupplier($request);
-        return redirect()->route("suppliers.index")->with("success", "Supplier created successfully.");
+        return redirect()->route("suppliers.index")->with("success", "Supplier successfully created.");
     }
 
      public function show($id) 
@@ -141,14 +141,14 @@ class SupplierController extends Controller
     public function update(SupplierRequest $request, $id) 
     {
         SupplierBUS::updateSupplier($request, $id);
-        return redirect()->route("suppliers.index")->with("success", "Supplier updated successfully.");
+        return redirect()->route("suppliers.index")->with("success", "Supplier successfully updated.");
     }
 
     public function destroy($id) 
     {
         try {
             if (SupplierBUS::destroySupplier($id)) {  
-                return response()->json(["status" => true, "message" => "Supplier deleted successfully."], 200);
+                return response()->json(["status" => true, "message" => "Supplier successfully deleted."], 200);
             } 
             else {
                 return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 

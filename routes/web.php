@@ -19,11 +19,8 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'auth'], function() {
     // dashboard
-    Route::get('/dashboard', function () {
-        $breadTitle = "Dashboard"; 
-        return view('dashboard', compact('breadTitle'));
-    })->name('dashboard');
-
+    Route::get('/dashboard', 'DashboardController@index')->name('dashboard.index');
+    
     // employees 
     Route::get('/employees', 'EmployeeController@index')->name('employees.index');
     Route::get('/ajax/employees', 'EmployeeController@indexAjax')->name('employees.index.ajax');
@@ -65,6 +62,32 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/pay-salary', 'SalaryController@paySalary')->name('pay.salary');
     Route::get('/ajax/pay-salary', 'SalaryController@paySalaryAjax')->name('pay.salary.ajax');
     Route::post('/ajax/pay-salary/{id}', 'SalaryController@paySalaryToEmployeeAjax')->name('pay.salary.employee.ajax');
+    Route::post('/ajax/advance-salaries/{id}/recurring', 'SalaryController@recurringAdvanceAjax')->name('advance-salaries.recurring');
+
+    // categories 
+    Route::get('/categories', 'CategoryController@index')->name('categories.index');
+    Route::get('/ajax/categories', 'CategoryController@indexAjax')->name('categories.index.ajax');
+    Route::get('/categories/create', 'CategoryController@create')->name('categories.create');
+    Route::post('/categories/create', 'CategoryController@store')->name('categories.store');
+    Route::get('/categories/{id}/edit', 'CategoryController@edit')->name('categories.edit');
+    Route::put('/categories/{id}/edit', 'CategoryController@update')->name('categories.update');
+    Route::delete('/categories/{id}/delete', 'CategoryController@destroy')->name('categories.destroy');
+
+
+
+
+    // products 
+    Route::get('/products', 'ProductController@index')->name('products.index');
+    Route::get('/ajax/products', 'ProductController@indexAjax')->name('products.index.ajax');
+    Route::get('/products/create', 'ProductController@create')->name('products.create');
+    Route::post('/products/create', 'ProductController@store')->name('products.store');
+    Route::get('/products/{id}/edit', 'ProductController@edit')->name('products.edit');
+    Route::put('/products/{id}/edit', 'ProductController@update')->name('products.update');
+    Route::delete('/products/{id}/delete', 'ProductController@destroy')->name('products.destroy');
+
+
+    // 37:00
+
 });
 
 require __DIR__.'/auth.php';

@@ -29,7 +29,8 @@ class EmployeeRequest extends FormRequest
             'nidno' => "required|unique:employees,nid_no,{$id},id|min:8|max:8",
             'salary' => 'required',
             'vacation' => 'required|date',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ];
     }
 
@@ -50,7 +51,7 @@ class EmployeeRequest extends FormRequest
             'experience.required' => 'The Experience field is required.',
             'nidno.required' => 'The NID Number field is required.',
             'salary.required' => 'The Salary field is required.',
-            'vacation.required' => 'The Vacation field is required.',
+            'vacation.required' => 'The Vacation field is required.'
         ];
     }
 }

@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Http\BUS\CustomerBUS;
+use App\Models\Category;
+use App\Http\BUS\CategoryBUS;
 use Illuminate\Http\Request;
-use App\Http\Requests\CustomerRequest;
+use App\Http\Requests\CategoryRequest;
 
-class CustomerController extends Controller
+class CategoryController extends Controller
 {
     public function __construct()
     {
-        $this->title = "Customers";
+        $this->title = "Categories";
     }
 
     public function index()
     {
-        return view("customers.index")
+        return view("categories.index")
             ->with('title', $this->title)
             ->with('breadTitle', $this->title);
     }
@@ -53,24 +53,17 @@ class CustomerController extends Controller
         }
 
         // Get how many items there should be
-        $total = CustomerBUS::getCustomers($request)->count();
-        $customers = CustomerBUS::getCustomers($request)
+        $total = CategoryBUS::getCategories($request)->count();
+        $categories = CategoryBUS::getCategories($request)
             ->orderBy($order_field, $order_sort)
             ->get();
         $data = [];
 
-        if(!empty($customers)) {
-            foreach($customers as $customer) {
+        if(!empty($categories)) {
+            foreach($categories as $category) {
                 $data[] = [
-                    'id' => $customer->id,
-                    'name' => $customer->name,
-                    'email' => $customer->email,
-                    'phone' => $customer->phone,
-                    'city' => $customer->city,
-                    'state' => $customer->state,
-                    'shop_name' => $customer->shop_name,
-                    'photo' => $customer->photo,
-                    'status'  => $customer->status
+                    'id' => $category->id,
+                    'name' => $category->name,
                 ];
             }
         }
@@ -93,63 +86,48 @@ class CustomerController extends Controller
     public function create() 
     {
         $breadItems = [
-            ['name' => 'Data', 'url' => route('customers.index')],
-            ['name' => 'Add Customer', 'url' => null],
+            ['name' => 'Data', 'url' => route('categories.index')],
+            ['name' => 'Add Category', 'url' => null],
         ];
 
-        return view("customers.create")
+        return view("categories.create")
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
     }
 
-    public function store(CustomerRequest $request) 
+    public function store(CategoryRequest $request) 
     {
-        CustomerBUS::storeCustomer($request);
-        return redirect()->route("customers.index")->with("success", "Customer successfully created.");
-    }
-
-    public function show($id) 
-    { 
-        $customer = Customer::findOrFail($id); 
-        $breadItems = [
-            ['name' => 'Data', 'url' => route('customers.index')],
-            ['name' => 'Basic Information', 'url' => null],
-        ];
-
-        return view("customers.show")
-            ->with('customer', $customer)
-            ->with('title', $this->title)
-            ->with('breadTitle', $this->title)
-            ->with('breadItems', $breadItems);
+        CategoryBUS::storeCategory($request);
+        return redirect()->route("categories.index")->with("success", "Category successfully created.");
     }
 
     public function edit($id) 
     { 
-        $customer = Customer::findOrFail($id); 
+        $category = Category::findOrFail($id); 
         $breadItems = [
-            ['name' => 'Data', 'url' => route('customers.index')],
-            ['name' => 'Edit Customer', 'url' => null],
+            ['name' => 'Data', 'url' => route('categories.index')],
+            ['name' => 'Edit Category', 'url' => null],
         ];
 
-        return view("customers.edit")
-            ->with('customer', $customer)
+        return view("categories.edit")
+            ->with('category', $category)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
     }
 
-    public function update(CustomerRequest $request, $id) 
+    public function update(CategoryRequest $request, $id) 
     {
-        CustomerBUS::updateCustomer($request, $id);
-        return redirect()->route("customers.index")->with("success", "Customer successfully updated.");
+        CategoryBUS::updateCategory($request, $id);
+        return redirect()->route("categories.index")->with("success", "Category successfully updated.");
     }
 
     public function destroy($id) 
     {
         try {
-            if (CustomerBUS::destroyCustomer($id)) {  
-                return response()->json(["status" => true, "message" => "Customer successfully deleted."], 200);
+            if (CategoryBUS::destroyCategory($id)) {  
+                return response()->json(["status" => true, "message" => "Category successfully deleted."], 200);
             } 
             else {
                 return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 

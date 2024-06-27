@@ -1,8 +1,8 @@
-function getEmployees() {
+function getProducts() {
     $.ajax({
         method: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: '/ajax/employees',
+        url: '/ajax/products',
         dataType: 'json',
         success: function(response) {
             setUpTable(response);
@@ -14,7 +14,7 @@ function getEmployees() {
 }
 
 function setUpTable(data) {
-    var datatable = $('.datatable-employees').KTDatatable({
+    var datatable = $('.datatable-products').KTDatatable({
         data: {
             source: data,
             map: function(raw) {
@@ -29,20 +29,17 @@ function setUpTable(data) {
             serverFiltering: true,
             serverSorting: true
         },
-        // layout definition
         layout:
         {
             scroll: true,
             footer: false
         },
-        // column sorting
         sortable: true,
         pagination: true,
         search: {
             input: $('#kt_datatable_search_query'),
             key: 'generalSearch'
         },
-        // columns definition
         columns: [
         {
             field: 'id',
@@ -60,7 +57,11 @@ function setUpTable(data) {
         {
             field: 'email',
             title: 'Email',
-        }, 
+        },
+        {
+            field: 'phone',
+            title: 'Phone',
+        },
         {
             field: 'city',
             title: 'City',
@@ -69,26 +70,22 @@ function setUpTable(data) {
             },
         },
         {
-            field: 'role',
-            title: 'Role',
+            field: 'type',
+            title: 'Type',
             width: 95,
-        },
-        {
-            field: 'experience',
-            title: 'Experience',
-            width: 90,
-        },
-        {
-            field: 'photo',
-            title: 'Photo',
-            width: 80,
             template: function(row) {
-                if (row.photo) {
-                    return '<img src="' + row.photo + '" alt="Employee Photo" width="90%" />';
-                }
-                else {
-                    return '<img src="../../../dist/assets/img/users/default_avatar.jpg" alt="Employee Photo" width="85%" />';
-                }
+                var type = {
+                    1: {
+                        'title': 'Distributor'
+                    },
+                    2: {
+                        'title': 'Whole Seller'
+                    },
+                    3: {
+                        'title': 'Brochure'
+                    },
+                };
+                return '<span class="label label-lg label-inline">' + type[row.type].title + '</span>';
             },
         },
         {
@@ -119,7 +116,7 @@ function setUpTable(data) {
             autoHide: false,
             template: function(row) {
                 return '\
-                    <a href="employees/'+row.id+'/show" class="btn btn-sm btn-clean btn-icon" title="Details">\
+                    <a href="products/'+row.id+'/show" class="btn btn-sm btn-clean btn-icon" title="Details">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -130,7 +127,7 @@ function setUpTable(data) {
                             </svg>\
                         </span>\
                     </a>\
-                     <a href="employees/'+row.id+'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
+                    <a href="products/'+row.id+'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -141,7 +138,7 @@ function setUpTable(data) {
                             </svg>\
                         </span>\
                     </a>\
-                    <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete" onclick="deleteEmployee('+row.id+');">\
+                    <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete" onclick="deleteProduct('+row.id+');">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -158,9 +155,9 @@ function setUpTable(data) {
     });
 }
 
-function deleteEmployee(id) {
+function deleteProduct(id) {
     Swal.fire({
-        title: 'Are you sure you want to delete this employee?',
+        title: 'Are you sure you want to delete this product?',
         text: 'This action can not be undone!',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -171,7 +168,7 @@ function deleteEmployee(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/employees/"+id+"/delete",
+                url: "/products/"+id+"/delete",
                 type: "DELETE",
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 data: {method: '_DELETE', submit: true}, 
@@ -195,10 +192,9 @@ function deleteEmployee(id) {
                     }
                 },
                 error: function(xhr, status, error) {
-                    // console.log(xhr.responseText);
                     Swal.fire(
                         'Error!',
-                        'There was an error while deleting the employee.',
+                        'There was an error while deleting the product.',
                         'error'
                     );
                 }
@@ -210,14 +206,14 @@ function deleteEmployee(id) {
 $('#kt_datatable_search_query').on('keyup', function() {
     var word = $(this).val();
     $.ajax({
-        url: '/ajax/employees',
+        url: '/ajax/products',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'word': word},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-products").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -234,14 +230,14 @@ $('#kt_datatable_search_query').on('keyup', function() {
 $('#kt_datatable_search_status').on('change', function() {
     var status = $(this).val();
     $.ajax({
-        url: '/ajax/employees',
+        url: '/ajax/products',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'status': status},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-products").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -258,16 +254,16 @@ $('#kt_datatable_search_status').on('change', function() {
 $('#kt_datatable_search_button').on('click', function() {
     var word = $('#kt_datatable_search_query').val();
     var status = $('#kt_datatable_search_status').val();
-
+    
     $.ajax({
-        url: "/ajax/employees",
+        url: "/ajax/products",
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'search': true, 'word': word, 'status': status},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-employees").KTDatatable({});
+                var datatable = $(".datatable-products").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -282,5 +278,5 @@ $('#kt_datatable_search_button').on('click', function() {
 });
 
 $(document).ready(function() {
-    getEmployees();
+    getProducts();
 });

@@ -17,11 +17,11 @@
             <div class="col-xl-4">
                 <div class="card card-custom bg-info card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Airplus Budget</a>
+                        <a href="{{ route('pay.salary') }}" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Salaries to Pay</a>
                         <div class="font-weight-bold text-white font-size-sm">
-                        <span class="font-size-h2 mr-2">87K%</span>23k to goal</div>
+                        <span class="font-size-h2 mr-2">{{ $salariesToPay }}</span>{{ $salariesToPay > 0 ? 'Payments to be made' : 'No outstanding payments' }}</div>
                         <div class="progress progress-xs mt-7 bg-white-o-90">
-                            <div class="progress-bar bg-white" role="progressbar" style="width: 87%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-white" role="progressbar" style="width: {{ $pctm }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>

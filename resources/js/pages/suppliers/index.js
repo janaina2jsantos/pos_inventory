@@ -85,7 +85,7 @@ function setUpTable(data) {
                         'title': 'Brochure'
                     },
                 };
-                return '<span class="label font-weight-bold label-lg label-inline">' + type[row.type].title + '</span>';
+                return '<span class="label label-lg label-inline">' + type[row.type].title + '</span>';
             },
         },
         {
@@ -104,7 +104,7 @@ function setUpTable(data) {
                         'class': ' label-light-success'
                     }
                 };
-                return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
+                return '<span class="label label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
             },
         },
         {

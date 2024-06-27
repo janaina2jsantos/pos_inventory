@@ -103,7 +103,7 @@ function setUpTable(data) {
                         'class': ' label-light-success'
                     }
                 };
-                return '<span class="label font-weight-bold label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
+                return '<span class="label label-lg ' + status[row.status].class + ' label-inline">' + status[row.status].title + '</span>';
             },
         },
         {

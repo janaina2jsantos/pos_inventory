@@ -22,3 +22,6 @@
     background: #8950FC;
     margin: 25px 0 45px;
 }
+.btn-paid {
+	cursor: default!important;
+}
