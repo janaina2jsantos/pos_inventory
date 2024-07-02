@@ -25,3 +25,11 @@
 .btn-paid {
 	cursor: default!important;
 }
+#productShowImage {
+	width: 500px;
+	height: 280px;
+}
+#productShowImage div {
+	width: 100%;
+	height: 100%;
+}

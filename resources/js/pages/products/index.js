@@ -55,37 +55,29 @@ function setUpTable(data) {
             title: 'Name',
         },
         {
-            field: 'email',
-            title: 'Email',
+            field: 'code',
+            title: 'Code',
         },
         {
-            field: 'phone',
-            title: 'Phone',
+            field: 'selling_price',
+            title: 'Selling Price',
         },
         {
-            field: 'city',
-            title: 'City',
+            field: 'expire_date',
+            title: 'Expire Date',
+        },
+        {
+            field: 'image',
+            title: 'Image',
+            width: 80,
+            textAlign: 'center',
             template: function(row) {
-                return row.city + ' - ' + row.state;
-            },
-        },
-        {
-            field: 'type',
-            title: 'Type',
-            width: 95,
-            template: function(row) {
-                var type = {
-                    1: {
-                        'title': 'Distributor'
-                    },
-                    2: {
-                        'title': 'Whole Seller'
-                    },
-                    3: {
-                        'title': 'Brochure'
-                    },
-                };
-                return '<span class="label label-lg label-inline">' + type[row.type].title + '</span>';
+                if (row.image) {
+                    return '<img src="' + row.image + '" alt="Product Image" width="90%" />';
+                }
+                else {
+                    return '<img src="../../../dist/assets/img/products/default_image.png" alt="Product Image" width="85%" />';
+                }
             },
         },
         {
@@ -254,7 +246,6 @@ $('#kt_datatable_search_status').on('change', function() {
 $('#kt_datatable_search_button').on('click', function() {
     var word = $('#kt_datatable_search_query').val();
     var status = $('#kt_datatable_search_status').val();
-    
     $.ajax({
         url: "/ajax/products",
         method: "GET",

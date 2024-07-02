@@ -73,20 +73,17 @@ Route::group(['middleware' => 'auth'], function() {
     Route::put('/categories/{id}/edit', 'CategoryController@update')->name('categories.update');
     Route::delete('/categories/{id}/delete', 'CategoryController@destroy')->name('categories.destroy');
 
-
-
-
     // products 
     Route::get('/products', 'ProductController@index')->name('products.index');
     Route::get('/ajax/products', 'ProductController@indexAjax')->name('products.index.ajax');
     Route::get('/products/create', 'ProductController@create')->name('products.create');
     Route::post('/products/create', 'ProductController@store')->name('products.store');
+    Route::get('/products/{id}/show', 'ProductController@show')->name('products.show');
     Route::get('/products/{id}/edit', 'ProductController@edit')->name('products.edit');
     Route::put('/products/{id}/edit', 'ProductController@update')->name('products.update');
     Route::delete('/products/{id}/delete', 'ProductController@destroy')->name('products.destroy');
 
-
-    // 37:00
+    // 00:00
 
 });
 

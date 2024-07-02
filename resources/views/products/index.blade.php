@@ -113,7 +113,7 @@
 					</div>
 				</div>
 				<!--datatable-->
-				<div class="datatable-products datatable-bordered datatable-head-custom" id="tableProducts"></div>
+				<div class="datatable-products datatable-bordered datatable-head-custom"></div>
 			</div>
 		</div>
 	</div>

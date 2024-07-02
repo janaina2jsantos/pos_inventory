@@ -15,13 +15,9 @@
 							<h3 class="card-title">{{ $breadTitle }}</h3>
 						@endisset
 					</div>
-					@include('suppliers._form', ["supplier" => $supplier])
+					@include('products._form', ["product" => $product])
 				</div>
 			</div>
 		</div>
 	</div>
-@stop
-
-@section('scripts')
-    <script src="{{ asset('js/pages/suppliers/edit.js') }}"></script>
 @stop

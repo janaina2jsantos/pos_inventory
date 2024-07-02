@@ -173,7 +173,7 @@
 
 		<div class="row">
 			<div class="col-lg-9 col-xl-6">
-				<label class="col-xl-3 col-lg-3 col-form-label">Photo</label>
+				<label>Photo</label>
 				@isset($action)
 					<div class="col-lg-9 col-xl-6">
 						<div class="image-input image-input-outline" id="kt_image_1">

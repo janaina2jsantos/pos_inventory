@@ -16,13 +16,16 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+        $month = date('Y-m', strtotime('-1 month'));
         $employees = EmployeeBUS::getEmployees($request)
             ->where('status', 1)
             ->count();
         $salariesToPay = DB::table('employees')
             ->leftJoin('salaries', 'employees.id', '=', 'salaries.employee_id')
-            ->where('employees.status', 1)
-            ->whereNull('salaries.id')->count();
+            ->whereNotIn('salaries.employee_id', ['employees.id'])
+            ->where("salaries.month", "NOT LIKE", "%{$month}%")
+            ->count();
+        // dd($salariesToPay);
         $pctm = (($employees - $salariesToPay) / $employees) * 100;
         
         return view("dashboard")

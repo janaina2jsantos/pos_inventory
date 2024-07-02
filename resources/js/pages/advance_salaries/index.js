@@ -5,6 +5,7 @@ function getAdvanceSalaries() {
         url: '/ajax/advance-salaries',
         dataType: 'json',
         success: function(response) {
+            // console.log(response);
             setUpTable(response);
         },
         error: function(error) {
@@ -60,6 +61,9 @@ function setUpTable(data) {
             title: 'Salary',
             width: 90,
             textAlign: 'center',
+            template: function(row) {
+                return '$' + row.employee_salary;
+            }
         },
         {
             field: 'month',
@@ -76,11 +80,11 @@ function setUpTable(data) {
             width: 120,
             textAlign: 'center',
             template: function(row) {
-                if ((row.isPaid) && (moment(row.isPaid, 'YYYY-MM').format('YYYY-MM') == moment(row.month, 'YYYY-MM').format('YYYY-MM'))) {
-                    return '<span class="label label-lg label-light-success label-inline">' + row.advance_salary + '</span>';
+                if ((row.isPaid.length > 0) && (moment(row.isPaid, 'YYYY-MM').format('YYYY-MM') == moment(row.month, 'YYYY-MM').format('YYYY-MM'))) {
+                    return '<span class="label label-lg label-light-success label-inline">$' + row.advance_salary + '</span>';
                 }
                 else {
-                    return '<span class="label label-lg label-light-danger label-inline">' + row.advance_salary + '</span>';
+                    return '<span class="label label-lg label-light-danger label-inline">$' + row.advance_salary + '</span>';
                 }
             },
         },

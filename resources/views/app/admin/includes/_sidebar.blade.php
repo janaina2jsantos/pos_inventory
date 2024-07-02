@@ -159,7 +159,7 @@
 							    </g>
 							</svg>
 						</span>
-						<span class="menu-text">Advance Salaries</span>
+						<span class="menu-text">Salaries(EMP)</span>
 						<i class="fa-light fa-angle-right"></i>
 					</a>
 					<div class="menu-submenu">

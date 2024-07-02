@@ -15,7 +15,7 @@
 							<h3 class="card-title">{{ $breadTitle }}</h3>
 						@endisset
 					</div>
-					@include('suppliers._form', ["action" => route('suppliers.update', ['id' => $supplier->id]), "method" => "POST", "supplier" => $supplier])
+					@include('products._form', ["action" => route('products.update', ['id' => $product->id]), "method" => "POST", "product" => $product])
 				</div>
 			</div>
 		</div>
@@ -23,5 +23,5 @@
 @stop
 
 @section('scripts')
-    <script src="{{ asset('js/pages/suppliers/edit.js') }}"></script>
+    <script src="{{ asset('js/pages/products/edit.js') }}"></script>
 @stop

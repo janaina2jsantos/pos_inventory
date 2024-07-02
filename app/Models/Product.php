@@ -11,15 +11,15 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    protected $dates = ['buy_date', 'expire_date'];
+    protected $dates = ['buying_date', 'expire_date'];
 
-    public function categories()
+    public function category()
     {
-        return $this->hasMany('App\Models\Category');
+        return $this->hasOne('App\Models\Category', 'id', 'category_id');
     }
 
     public function supplier()
     {
-        return $this->hasOne('App\Models\Supplier');
+        return $this->hasOne('App\Models\Supplier', 'id', 'supplier_id');
     }
 }

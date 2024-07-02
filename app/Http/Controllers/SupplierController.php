@@ -63,7 +63,7 @@ class SupplierController extends Controller
             foreach($suppliers as $supplier) {
                 $data[] = [
                     'id' => $supplier->id,
-                    'name' => $supplier->name,
+                    'name' => $supplier->shop_name,
                     'email' => $supplier->email,
                     'phone' => $supplier->phone,
                     'city' => $supplier->city,

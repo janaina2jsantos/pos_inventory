@@ -13,6 +13,6 @@ class Supplier extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Models\Product');
+        return $this->belongsTo('App\Models\Product', 'id', 'supplier_id');
     }
 }

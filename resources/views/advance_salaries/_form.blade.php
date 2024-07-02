@@ -13,12 +13,12 @@
 	        </ul>
 	    </div>
 	@endif
-
+	
 	<div class="card-body">	
 		<div class="row">					
 			<div class="col-md-6 form-group">
 				<label>Employee&nbsp;<span class="text-danger">*</span></label>
-				<select class="form-control" name="employee_id" {{ (isset($isPaid) && $isPaid == $advSalary->month->format('Y-m')) ? 'disabled' : '' }}>
+				<select class="form-control" name="employee_id" {{ (isset($isPaid) && date('Y-m', strtotime($isPaid->month)) == $advSalary->month->format('Y-m')) ? 'disabled' : '' }}>
 					<option selected disabled>Choose an option</option>
 					@foreach($employees as $employee)
 						<option value="{{ $employee->id }}" {{ (isset($advSalary) && $advSalary->employee_id == $employee->id) ? 'selected' : '' }}>{{ $employee->name }}</option>
@@ -27,21 +27,21 @@
 			</div>
 			<div class="col-md-6 form-group">
 				<label>Advance Salary&nbsp;<span class="text-danger">*</span></label>
-				<input type="text" class="form-control" name="advance_salary" id="advanceSalary" value="{{ isset($advSalary) ? $advSalary->advance_salary : old('advance_salary') }}" placeholder="Advance Salary" {{ (isset($isPaid) && $isPaid == $advSalary->month->format('Y-m')) ? 'disabled' : '' }} />
+				<input type="text" class="form-control" name="advance_salary" id="advanceSalary" value="{{ isset($advSalary) ? $advSalary->advance_salary : old('advance_salary') }}" placeholder="Advance Salary" {{ (isset($isPaid) && date('Y-m', strtotime($isPaid->month)) == $advSalary->month->format('Y-m')) ? 'disabled' : '' }} />
 			</div>
 		</div>
 
 		<div class="row">					
 			<div class="col-md-6 form-group">
 				<label>Month&nbsp;<span class="text-danger">*</span></label>
-				<input type="month" class="form-control" name="month" value="{{ isset($advSalary) ? $advSalary->month->format('Y-m') : old('month') }}" {{ (isset($isPaid) && $isPaid == $advSalary->month->format('Y-m')) ? 'disabled' : '' }} />
+				<input type="month" class="form-control" name="month" value="{{ isset($advSalary) ? $advSalary->month->format('Y-m') : old('month') }}" {{ (isset($isPaid) && date('Y-m', strtotime($isPaid->month)) == $advSalary->month->format('Y-m')) ? 'disabled' : '' }} />
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="card-footer">
 		@isset($advSalary)
-			@if(($isPaid) && ($isPaid == $advSalary->month->format('Y-m')))
+			@if(($isPaid) && (date('Y-m', strtotime($isPaid->month)) == $advSalary->month->format('Y-m')))
 				<p><span class="label label-lg label-light-danger label-inline font-weight-bold">You are not able to edit anymore. This advance has already been paid to the employee.</span></p>
 				<a href="#" class="btn btn-primary mr-2" onclick="teste('{{$advSalary->id}}');">
 				<span class="svg-icon">

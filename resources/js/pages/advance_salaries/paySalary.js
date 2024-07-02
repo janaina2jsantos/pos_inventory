@@ -5,6 +5,7 @@ function getEmployees() {
         url: '/ajax/pay-salary',
         dataType: 'json',
         success: function(response) {
+            // console.log(response);
             setUpTable(response);
         },
         error: function(error) {
@@ -59,12 +60,18 @@ function setUpTable(data) {
             title: 'Salary',
             width: 90,
             textAlign: 'center',
+            template: function(row) {
+                return '$' + row.salary;
+            }
         },
         {
             field: 'month',
             title: 'Month',
             width: 90,
             textAlign: 'center',
+            template: function(row) {
+                return moment(row.month, 'YYYY-MM').format('MMMM');
+            },
         },
         {
             field: 'advance',
@@ -73,7 +80,12 @@ function setUpTable(data) {
             textAlign: 'center',
             template: function(row) {
                 if (row.advance.length) {
-                    return '$'+row.advance;
+                    if (!row.isPaid.length) {
+                        return '<span class="label label-lg label-light-danger label-inline">$' + row.advance + '</span>';
+                    }
+                    else {
+                        return '<span class="label label-lg label-light-success label-inline">$' + row.advance + '</span>';
+                    }
                 }
                 else {
                     return '$0.00';
@@ -102,7 +114,7 @@ function setUpTable(data) {
             overflow: 'visible',
             autoHide: false,
             template: function(row) {
-                if (!row.isPaid) {
+                if (!row.isPaid.length) {
                     return '\
                         <a href="#" class="btn btn-light-danger font-weight-bold mr-2" title="Edit" onclick="paySalaryToEmployee('+row.id+');">Pay Salary</a>\
                     ';
@@ -215,6 +227,7 @@ $('#kt_datatable_search_month').on('change', function() {
 $('#kt_datatable_search_button').on('click', function() {
     var word = $('#kt_datatable_search_query').val();
     var month = $('#kt_datatable_search_month').val();
+    
     $.ajax({
         url: "/ajax/pay-salary",
         method: "GET",

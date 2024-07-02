@@ -28,7 +28,6 @@ class SalaryController extends Controller
 
     public function indexAjax(Request $request)
     {
-        $prevMonth = date("Y-m", strtotime('-1 month'));
         $page = 1;
         $per_page = 10;
 
@@ -70,10 +69,10 @@ class SalaryController extends Controller
                 $data[] = [
                     'id' => $adv->id,
                     'employee_name' => $adv->employee->name,
-                    'employee_salary' => '$'.$adv->employee->salary,
-                    'advance_salary' => '$'.$adv->advance_salary, 
+                    'employee_salary' => number_format($adv->employee->salary, 2, ',', '.'),
+                    'advance_salary' => number_format($adv->advance_salary, 2, ',', '.'), 
                     'photo' => $adv->employee->photo,
-                    'isPaid' => $adv->employee->salaries()->where("employee_id", $adv->employee->id)->where("month", "LIKE", "%{$prevMonth}%")->where("status", 1)->pluck('month'),
+                    'isPaid' => $adv->employee->salaries()->where("employee_id", $adv->employee->id)->where("month", "LIKE", "%{$adv->month->format('Y-m')}%")->where("status", 1)->pluck('month'),
                     'month' => $adv->month
                 ];
             }
@@ -124,7 +123,6 @@ class SalaryController extends Controller
 
     public function edit($id) 
     { 
-        $prevMonth = date("Y-m", strtotime('-1 month'));
         $advSalary = AdvanceSalary::findOrFail($id); 
         $employees = Employee::where('status', 1)->get();
         $breadItems = [
@@ -136,14 +134,14 @@ class SalaryController extends Controller
             ->select('salaries.month')
             ->join('employees', 'salaries.employee_id', '=', 'employees.id')
             ->where('salaries.employee_id', $advSalary->employee->id)
-            ->where("salaries.month", "LIKE", "%{$prevMonth}%")
+            ->where("salaries.month", "LIKE", "%{$advSalary->month->format('Y-m')}%")
             ->where('salaries.status', 1)
             ->first();
 
         return view("advance_salaries.edit")
             ->with('advSalary', $advSalary)
             ->with('employees', $employees)
-            ->with('isPaid', date('Y-m', strtotime($isPaid->month)))
+            ->with('isPaid', $isPaid)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);
@@ -192,7 +190,6 @@ class SalaryController extends Controller
 
     public function paySalaryAjax(Request $request)
     {
-        $prevMonth = date("Y-m", strtotime('-1 month'));
         $page = 1;
         $per_page = 10;
 
@@ -245,13 +242,29 @@ class SalaryController extends Controller
 
         if(!empty($employees)) {
             foreach($employees as $employee) {
+                // $month = $employee->salaries()
+                //     ->where("employee_id", $employee->id)
+                //     ->where("status", 1)
+                //     ->pluck("month")
+                //     ->map(function($date) {
+                //         return \Carbon\Carbon::parse($date)->format('Y-m');
+                //     });
+
+                $month = date('Y-m', strtotime('-1 month'));
+                $advance = $employee->advanceSalaries()
+                    ->where("month", "LIKE", "%{$month}%")
+                    ->pluck("advance_salary")
+                    ->map(function($date) {
+                        return number_format($date, 2, ',', '.');
+                    });
+
                 $data[] = [
                     'id' => $employee->id,
                     'employee' => $employee->name,
-                    'salary' => '$'.$employee->salary,
-                    'month' => date('F', strtotime('-1 month')),
-                    'advance' => $employee->advanceSalaries()->where("month", "LIKE", "%{$prevMonth}%")->pluck('advance_salary'),
-                    'isPaid' => $employee->salaries()->where("employee_id", $employee->id)->where("month", "LIKE", "%{$prevMonth}%")->where("status", 1)->get(),
+                    'salary' => number_format($employee->salary, 2, ',', '.'),
+                    'month' => $month,
+                    'advance' => $advance,
+                    'isPaid' => $employee->salaries()->where("employee_id", $employee->id)->where("month", "LIKE", "%{$month}%")->where("status", 1)->get(),
                     'photo' => $employee->photo
                 ];
             }

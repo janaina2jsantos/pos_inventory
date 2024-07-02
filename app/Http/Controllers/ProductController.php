@@ -8,6 +8,7 @@ use App\Models\Supplier;
 use App\Http\BUS\ProductBUS;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
+use DB;
 
 class ProductController extends Controller
 {
@@ -66,6 +67,11 @@ class ProductController extends Controller
                 $data[] = [
                     'id' => $product->id,
                     'name' => $product->name,
+                    'code' => $product->code,
+                    'selling_price' => '$'.$product->selling_price,
+                    'expire_date' => $product->expire_date->format('d-m-Y'),
+                    'image' => $product->image,
+                    'status' => $product->status,
                 ];
             }
         }
@@ -116,6 +122,13 @@ class ProductController extends Controller
             ['name' => 'Basic Information', 'url' => null],
         ];
 
+        // $product = DB::table('products')
+        //     ->join('categories', 'products.category_id', 'categories.id')
+        //     ->join('suppliers', 'products.supplier_id', 'suppliers.id')
+        //     ->select('categories.name AS category', 'suppliers.name AS supplier', 'products.*')
+        //     ->where('products.id', $id)
+        //     ->first();
+
         return view("products.show")
             ->with('product', $product)
             ->with('title', $this->title)
@@ -126,6 +139,8 @@ class ProductController extends Controller
     public function edit($id) 
     { 
         $product = Product::findOrFail($id); 
+        $categories = Category::all();
+        $suppliers = Supplier::where('status', 1)->get();
         $breadItems = [
             ['name' => 'Data', 'url' => route('products.index')],
             ['name' => 'Edit Product', 'url' => null],
@@ -133,6 +148,8 @@ class ProductController extends Controller
 
         return view("products.edit")
             ->with('product', $product)
+            ->with('categories', $categories)
+            ->with('suppliers', $suppliers)
             ->with('title', $this->title)
             ->with('breadTitle', $this->title)
             ->with('breadItems', $breadItems);

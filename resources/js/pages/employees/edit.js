@@ -1,15 +1,12 @@
 $(document).ready(function() {
     // input mask
-    // phone
     $("#phone").inputmask("mask", {
         "mask": "(99) 99999-9999"
     });
-    // zip
     $("#zip").inputmask({
         "mask": "99999-999",
         placeholder: "" 
     });
-    // money
     $("#salary").inputmask('€ 999.999.999,99', {
         numericInput: true
     });
