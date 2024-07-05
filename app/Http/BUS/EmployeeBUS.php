@@ -121,19 +121,13 @@ class EmployeeBUS
 
 	public static function destroyEmployee($id) 
 	{
-		try {
-            $employee = Employee::findOrFail($id);
-			// delete the employee photo if it exists
-            if ($employee->photo) {
-	        	if (\File::exists(public_path($employee->photo))) {
-	        		\File::delete(public_path($employee->photo));
-	        	}
-	        }
-            $employee->delete();
-            return true;
+        $employee = Employee::findOrFail($id);
+		// delete the employee photo if it exists
+        if ($employee->photo) {
+        	if (\File::exists(public_path($employee->photo))) {
+        		\File::delete(public_path($employee->photo));
+        	}
         }
-        catch(Exception $ex) {
-            return false;
-        }
+        return $employee->delete();
 	}
 }

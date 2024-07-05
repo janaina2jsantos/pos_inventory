@@ -43,7 +43,7 @@
 		@isset($advSalary)
 			@if(($isPaid) && (date('Y-m', strtotime($isPaid->month)) == $advSalary->month->format('Y-m')))
 				<p><span class="label label-lg label-light-danger label-inline font-weight-bold">You are not able to edit anymore. This advance has already been paid to the employee.</span></p>
-				<a href="#" class="btn btn-primary mr-2" onclick="teste('{{$advSalary->id}}');">
+				<a href="#" class="btn btn-primary mr-2" onclick="recurringSalary('{{$advSalary->id}}');">
 				<span class="svg-icon">
 				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 					<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

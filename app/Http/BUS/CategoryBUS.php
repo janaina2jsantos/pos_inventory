@@ -30,7 +30,6 @@ class CategoryBUS
 		$category = Category::create([
             'name' => $request->name
         ]);
-        
 		return $category;
 	}
 	
@@ -40,19 +39,11 @@ class CategoryBUS
 		$category->update([
             'name' => $request->input('name')
         ]);
-
 		return $category;
 	}
 
 	public static function destroyCategory($id) 
 	{
-		try {
-            $category = Category::findOrFail($id);
-            $category->delete();
-            return true;
-        }
-        catch(Exception $ex) {
-            return false;
-        }
+        return Category::findOrFail($id)->delete();
 	}
 }

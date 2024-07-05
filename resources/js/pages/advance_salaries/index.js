@@ -5,7 +5,6 @@ function getAdvanceSalaries() {
         url: '/ajax/advance-salaries',
         dataType: 'json',
         success: function(response) {
-            // console.log(response);
             setUpTable(response);
         },
         error: function(error) {
@@ -160,7 +159,7 @@ function setUpTable(data) {
 function deleteAdvanceSalary(id) {
     Swal.fire({
         title: 'Are you sure you want to delete this advance?',
-        text: 'This action can not be undone!',
+        text: 'This action cannot be undone!',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -256,7 +255,6 @@ $('#kt_datatable_search_month').on('change', function() {
 $('#kt_datatable_search_button').on('click', function() {
     var word = $('#kt_datatable_search_query').val();
     var status = $('#kt_datatable_search_status').val();
-
     $.ajax({
         url: "/ajax/advance-salaries",
         method: "GET",

@@ -94,7 +94,7 @@ function setUpTable(data) {
 function deleteCategory(id) {
     Swal.fire({
         title: 'Are you sure you want to delete this category?',
-        text: 'This action can not be undone!',
+        text: 'This action cannot be undone!',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',

@@ -87,13 +87,6 @@ class SupplierBUS
 
 	public static function destroySupplier($id) 
 	{
-		try {
-            $supplier = Supplier::findOrFail($id);
-            $supplier->delete();
-            return true;
-        }
-        catch(Exception $ex) {
-            return false;
-        }
+        return Supplier::findOrFail($id)->delete();
 	}
 }

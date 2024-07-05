@@ -6,6 +6,7 @@ use App\Models\AdvanceSalary;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdvanceSalaryRequest;
+use Carbon\Carbon;
 use Exception;
 use DateTime;
 
@@ -37,27 +38,19 @@ class AdvanceSalaryBUS
 	public static function storeAdvanceSalary(AdvanceSalaryRequest $request) 
 	{
 		$payment = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->advance_salary)));
-		$hasAdvSalary = AdvanceSalary::where("month", "LIKE", "%{$request->month}%")
-			->where("employee_id", $request->employee_id)
-			->first();
+		$advSalary = AdvanceSalary::create([
+            'employee_id' => $request->employee_id,
+            'advance_salary' => $payment,
+            'month' => $request->month
+        ]);
 
-		// checking if employee already has an advance registered in the provided month
-		if ($hasAdvSalary === null) {
-			$advSalary = AdvanceSalary::create([
-	            'employee_id' => $request->employee_id,
-	            'advance_salary' => $payment,
-	            'month' => $request->month
-	        ]);
-
-			return $advSalary;
-		}
+		return $advSalary;
 	}
 	
 	public static function updateAdvanceSalary(AdvanceSalaryRequest $request, $id) 
 	{
 		$advSalary = AdvanceSalary::findOrFail($id);
 		$payment = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->input('advance_salary'))));
-
 		$advSalary->update([
             'employee_id' => $request->input('employee_id'),
             'advance_salary' => $payment,
@@ -69,36 +62,18 @@ class AdvanceSalaryBUS
 
 	public static function destroyAdvanceSalary($id) 
 	{
-		try {
-            $advSalary = AdvanceSalary::findOrFail($id);
-            $advSalary->delete();
-            return true;
-        }
-        catch(Exception $ex) {
-            return false;
-        }
+        return AdvanceSalary::findOrFail($id)->delete();
 	}
 	
-	public static function recurringAdvanceSalary($id) 
+	public static function recurringAdvanceSalary($id, $month) 
 	{
 		$advSalary = AdvanceSalary::findOrFail($id);
-        $date = new DateTime($advSalary->month);
-        $date->modify('+1 month');
-        $month = $date->format('Y-m');
+		$advSalary = AdvanceSalary::create([
+            'employee_id' => $advSalary->employee_id,
+            'advance_salary' => $advSalary->advance_salary,
+            'month' => $month
+        ]);
 
-        $hasAdvSalary = AdvanceSalary::where("month", "LIKE", "%{$month}%")
-			->where("employee_id", $advSalary->employee_id)
-			->first();
-
-		// checking if employee already has an advance registered in the provided month
-		if ($hasAdvSalary === null) {
-			$advSalary = AdvanceSalary::create([
-	            'employee_id' => $advSalary->employee_id,
-	            'advance_salary' => $advSalary->advance_salary,
-	            'month' => $month
-	        ]);
-
-			return $advSalary;
-		}
+		return $advSalary;
 	}
 }

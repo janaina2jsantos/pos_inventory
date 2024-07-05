@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xl-4">
-                <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url({{asset('dist/assets/img/svg/abstract-3.svg')}})">
+                <div class="card card-custom bgi-no-repeat card-stretch card-progress gutter-b" style=" background-image: url({{asset('dist/assets/img/svg/abstract-3.svg')}})">
                     <div class="card-body my-4">
                         <a href="#" class="card-title font-weight-bolder text-info font-size-h6 mb-4 text-hover-state-dark d-block">SAP UI Progress</a>
                         <div class="font-weight-bold text-muted font-size-sm">
@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="col-xl-4">
-                <div class="card card-custom bg-info card-stretch gutter-b">
+                <div class="card card-custom {{ $salariesToPay > 0 ? 'bg-danger' : 'bg-info payments' }} bg-info card-stretch card-salaries gutter-b" style="background-image: url({{asset('dist/assets/img/misc/warning.png')}})">
                     <div class="card-body my-4">
                         <a href="{{ route('pay.salary') }}" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Salaries to Pay</a>
                         <div class="font-weight-bold text-white font-size-sm">

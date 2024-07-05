@@ -33,3 +33,12 @@
 	width: 100%;
 	height: 100%;
 }
+.card-progress, .card-salaries {
+	background-size: 30% auto;
+	background-position: right top;
+}
+.card-salaries {
+	background-repeat: no-repeat;
+	background-blend-mode: overlay;
+	background-position-x: 250px;
+}

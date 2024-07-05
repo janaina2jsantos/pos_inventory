@@ -110,19 +110,13 @@ class ProductBUS
 
 	public static function destroyProduct($id) 
 	{
-		try {
-            $product = Product::findOrFail($id);
-			// delete the product image if it exists
-            if ($product->image) {
-	        	if (\File::exists(public_path($product->image))) {
-	        		\File::delete(public_path($product->image));
-	        	}
-	        }
-            $product->delete();
-            return true;
+        $product = Product::findOrFail($id);
+		// delete the product image if it exists
+        if ($product->image) {
+        	if (\File::exists(public_path($product->image))) {
+        		\File::delete(public_path($product->image));
+        	}
         }
-        catch(Exception $ex) {
-            return false;
-        }
+        return $product->delete();
 	}
 }

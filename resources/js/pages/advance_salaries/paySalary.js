@@ -5,7 +5,6 @@ function getEmployees() {
         url: '/ajax/pay-salary',
         dataType: 'json',
         success: function(response) {
-            // console.log(response);
             setUpTable(response);
         },
         error: function(error) {
@@ -227,7 +226,6 @@ $('#kt_datatable_search_month').on('change', function() {
 $('#kt_datatable_search_button').on('click', function() {
     var word = $('#kt_datatable_search_query').val();
     var month = $('#kt_datatable_search_month').val();
-    
     $.ajax({
         url: "/ajax/pay-salary",
         method: "GET",

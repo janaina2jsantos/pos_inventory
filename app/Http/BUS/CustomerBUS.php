@@ -118,19 +118,13 @@ class CustomerBUS
 
 	public static function destroyCustomer($id) 
 	{
-		try {
-            $customer = Customer::findOrFail($id);
-			// delete the customer photo if it exists
-            if ($customer->photo) {
-	        	if (\File::exists(public_path($customer->photo))) {
-	        		\File::delete(public_path($customer->photo));
-	        	}
-	        }
-            $customer->delete();
-            return true;
+        $customer = Customer::findOrFail($id);
+		// delete the customer photo if it exists
+        if ($customer->photo) {
+        	if (\File::exists(public_path($customer->photo))) {
+        		\File::delete(public_path($customer->photo));
+        	}
         }
-        catch(Exception $ex) {
-            return false;
-        }
+        return $customer->delete();
 	}
 }

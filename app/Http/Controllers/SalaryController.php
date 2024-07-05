@@ -10,6 +10,8 @@ use App\Http\BUS\SalaryBUS;
 use App\Http\BUS\EmployeeBUS;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdvanceSalaryRequest;
+use DateTime;
+use Carbon\Carbon;
 use DB;
 
 class SalaryController extends Controller
@@ -110,14 +112,31 @@ class SalaryController extends Controller
 
     public function store(AdvanceSalaryRequest $request) 
     {
-        // dd($request->all());
-        $rowCount = AdvanceSalaryBUS::storeAdvanceSalary($request);
+        $currentMonth = date('m', strtotime('m'));
+        $employee = Employee::findOrFail($request->employee_id);
+        $advPayment = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->advance_salary)));
+        $pctm = round(($advPayment / (int)$employee->salary) * 100, 2);
+        $hasAdvSalary = AdvanceSalary::where("month", "LIKE", "%{$request->month}%")
+            ->where("employee_id", $request->employee_id)
+            ->first();
 
-        if ($rowCount) {
+        if ((int)Carbon::parse($request->month)->format('m') <= (int)$currentMonth) {
+            return redirect()->back()->withErrors(["error" => "The advance can only be paid next month."]);
+            die();
+        }
+
+        if ($pctm > 10) {
+            return redirect()->back()->withErrors(["error" => "The advance cannot be greater than ten percent of the employee's salary."]);
+            die();
+        }
+
+        // checks if employee already has an advance registered in the provided month
+        if ($hasAdvSalary === null) {
+            AdvanceSalaryBUS::storeAdvanceSalary($request);
             return redirect()->route("advance-salaries.index")->with("success", "Advance successfully paid.");
         }
         else {
-            return redirect()->back()->withErrors(["error" => "Advance already paid in this month for this employee."]);
+            return redirect()->back()->withErrors(["error" => "There is already an advance for this employee this month."]);
         }
     }
 
@@ -149,6 +168,21 @@ class SalaryController extends Controller
 
     public function update(AdvanceSalaryRequest $request, $id) 
     {
+        $currentMonth = date('m', strtotime('m'));
+        $employee = Employee::findOrFail($request->employee_id);
+        $advPayment = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->advance_salary)));
+        $pctm = round(($advPayment / (int)$employee->salary) * 100, 2);
+
+        if ((int)Carbon::parse($request->month)->format('m') <= (int)$currentMonth) {
+            return redirect()->back()->withErrors(["error" => "The advance can only be paid next month."]);
+            die();
+        }
+
+        if ($pctm > 10) {
+            return redirect()->back()->withErrors(["error" => "The advance cannot be greater than ten percent of the employee's salary."]);
+            die();
+        }
+
         AdvanceSalaryBUS::updateAdvanceSalary($request, $id);
         return redirect()->route("advance-salaries.index")->with("success", "Advance successfully updated.");
     }
@@ -170,14 +204,22 @@ class SalaryController extends Controller
 
     public function recurringAdvanceAjax($id) 
     {
-        $rowCount = AdvanceSalaryBUS::recurringAdvanceSalary($id);
+        $advSalary = AdvanceSalary::findOrFail($id);
+        $date = new DateTime();
+        $date->modify('+1 month');
+        $month = $date->format('Y-m');
         
-        if ($rowCount) {
-            return response()->json(["status" => true, "message" => "Advance successfully paid."], 200);
+        $hasAdvSalary = AdvanceSalary::where("month", "LIKE", "%{$month}%")
+            ->where("employee_id", $advSalary->employee_id)
+            ->first();
 
+        // checks if employee already has an advance registered in the provided month
+        if ($hasAdvSalary === null) {
+            AdvanceSalaryBUS::recurringAdvanceSalary($id, $month);
+            return response()->json(["status" => true, "message" => "Advance successfully paid."], 200);
         }
         else {
-            return response()->json(["status" => false, "message" => "Advance already paid in this month for this employee."], 400); 
+            return response()->json(["status" => false, "message" => "There is already an advance for this employee this month."], 400);  
         }
     }
 
@@ -242,14 +284,6 @@ class SalaryController extends Controller
 
         if(!empty($employees)) {
             foreach($employees as $employee) {
-                // $month = $employee->salaries()
-                //     ->where("employee_id", $employee->id)
-                //     ->where("status", 1)
-                //     ->pluck("month")
-                //     ->map(function($date) {
-                //         return \Carbon\Carbon::parse($date)->format('Y-m');
-                //     });
-
                 $month = date('Y-m', strtotime('-1 month'));
                 $advance = $employee->advanceSalaries()
                     ->where("month", "LIKE", "%{$month}%")

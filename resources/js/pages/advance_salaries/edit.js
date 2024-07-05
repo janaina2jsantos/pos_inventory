@@ -4,8 +4,7 @@ $(document).ready(function() {
     });
 });
 
-function teste(id) {
-
+function recurringSalary(id) {
     $.ajax({
         url: "/ajax/advance-salaries/"+id+"/recurring",
         type: "POST",
@@ -31,8 +30,7 @@ function teste(id) {
             }
         },
         error: function(xhr, status, error) {
-            console.log(error);
-
+            // console.log(error);
             Swal.fire(
                 'Error!',
                 'There was an error while executing the action.',
@@ -40,5 +38,4 @@ function teste(id) {
             );
         }
     });
-
 }

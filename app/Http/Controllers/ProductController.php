@@ -121,14 +121,7 @@ class ProductController extends Controller
             ['name' => 'Data', 'url' => route('products.index')],
             ['name' => 'Basic Information', 'url' => null],
         ];
-
-        // $product = DB::table('products')
-        //     ->join('categories', 'products.category_id', 'categories.id')
-        //     ->join('suppliers', 'products.supplier_id', 'suppliers.id')
-        //     ->select('categories.name AS category', 'suppliers.name AS supplier', 'products.*')
-        //     ->where('products.id', $id)
-        //     ->first();
-
+        
         return view("products.show")
             ->with('product', $product)
             ->with('title', $this->title)

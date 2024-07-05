@@ -151,7 +151,7 @@
 				@isset($action)
 					<input type="text" class="form-control" name="salary" id="salary" value="{{ isset($employee) ? $employee->salary : old('salary') }}" placeholder="Salary" />
 				@else
-					<h4>${{ $employee->salary }}</h4>
+					<h4>${{ number_format($employee->salary, 2, ',', '.') }}</h4>
 				@endisset
 			</div>
 		</div>
