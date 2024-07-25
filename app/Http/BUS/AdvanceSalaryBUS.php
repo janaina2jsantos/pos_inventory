@@ -12,7 +12,8 @@ use DateTime;
 
 class AdvanceSalaryBUS
 {
-	public static function getAdvanceSalaries(Request $request) {
+	public static function getAdvanceSalaries(Request $request) 
+	{
 		$advSalaries = new AdvanceSalary();
 		if ($request->has("search")) {
 			if ($request->word != "") {
@@ -56,13 +57,18 @@ class AdvanceSalaryBUS
             'advance_salary' => $payment,
             'month' => $request->input('month')
         ]);
-
+        
 		return $advSalary;
 	}
 
 	public static function destroyAdvanceSalary($id) 
 	{
-        return AdvanceSalary::findOrFail($id)->delete();
+		try {
+			return AdvanceSalary::findOrFail($id)->delete();
+		}
+		catch(Exception $ex) {
+			return false;
+		}
 	}
 	
 	public static function recurringAdvanceSalary($id, $month) 

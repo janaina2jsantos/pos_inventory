@@ -83,8 +83,26 @@ Route::group(['middleware' => 'auth'], function() {
     Route::put('/products/{id}/edit', 'ProductController@update')->name('products.update');
     Route::delete('/products/{id}/delete', 'ProductController@destroy')->name('products.destroy');
 
-    // 00:00
+    // expenses 
+    Route::get('/expenses', 'ExpenseController@index')->name('expenses.index');
+    Route::get('/ajax/expenses', 'ExpenseController@indexAjax')->name('expenses.index.ajax');
+    Route::get('/expenses/create', 'ExpenseController@create')->name('expenses.create');
+    Route::post('/expenses/create', 'ExpenseController@store')->name('expenses.store');
+    Route::get('/expenses/{id}/edit', 'ExpenseController@edit')->name('expenses.edit');
+    Route::put('/expenses/{id}/edit', 'ExpenseController@update')->name('expenses.update');
+    Route::get('/expenses/today', 'ExpenseController@todayExpenses')->name('expenses.today');
+    Route::get('/ajax/expenses/today', 'ExpenseController@todayExpensesAjax')->name('expenses.today.ajax');
+    Route::get('/expenses/monthly', 'ExpenseController@monthlyExpenses')->name('expenses.monthly');
+    Route::get('/ajax/expenses/monthly', 'ExpenseController@monthlyExpensesAjax')->name('expenses.monthly.ajax');
+    Route::get('/expenses/yearly', 'ExpenseController@yearlyExpenses')->name('expenses.yearly');
+    Route::get('/ajax/expenses/yearly', 'ExpenseController@yearlyExpensesAjax')->name('expenses.yearly.ajax');
 
+    // attendances 
+    Route::get('/attendances', 'AttendanceController@index')->name('attendances.index');
+    Route::get('/ajax/attendances', 'AttendanceController@indexAjax')->name('attendances.index.ajax');
+    Route::get('/attendances/take', 'AttendanceController@takeAttendance')->name('attendances.take');
+    Route::get('/ajax/attendances/take', 'AttendanceController@takeAttendanceAjax')->name('attendances.take.ajax');
+    Route::post('/attendances/{id}/create', 'AttendanceController@store')->name('attendances.store');
 });
 
 require __DIR__.'/auth.php';

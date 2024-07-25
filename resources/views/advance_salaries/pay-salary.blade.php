@@ -30,8 +30,8 @@
 					</span>{{ date("F Y") }}</a>
 				</div>
 			</div>
-			<!-- filters -->
 			<div class="card-body">
+				<!-- filters -->
 				<div class="mb-7">
 					<div class="row align-items-center">
 						<div class="col-lg-9 col-xl-8">
@@ -44,7 +44,6 @@
 										</span>
 									</div>
 								</div>
-
 								<div class="col-md-6 my-2 my-md-0">
 									<div class="d-flex align-items-center">
 										<label class="mr-3 mb-0 d-none d-md-block">Month:</label>

@@ -10,7 +10,8 @@ use Exception;
 
 class CustomerBUS
 {
-	public static function getCustomers(Request $request) {
+	public static function getCustomers(Request $request) 
+	{
 		$customers = new Customer();
 		if ($request->has("search")) {
 			if ($request->word != "" || $request->status != "") {
@@ -118,13 +119,18 @@ class CustomerBUS
 
 	public static function destroyCustomer($id) 
 	{
-        $customer = Customer::findOrFail($id);
-		// delete the customer photo if it exists
-        if ($customer->photo) {
-        	if (\File::exists(public_path($customer->photo))) {
-        		\File::delete(public_path($customer->photo));
-        	}
-        }
-        return $customer->delete();
+		try {
+			$customer = Customer::findOrFail($id);
+			// delete customer's photo if it exists
+	        if ($customer->photo) {
+	        	if (\File::exists(public_path($customer->photo))) {
+	        		\File::delete(public_path($customer->photo));
+	        	}
+	        }
+	        return $customer->delete();
+		}
+		catch(Exception $ex) {
+			return false;
+		}
 	}
 }

@@ -146,16 +146,11 @@ class SupplierController extends Controller
 
     public function destroy($id) 
     {
-        try {
-            if (SupplierBUS::destroySupplier($id)) {  
-                return response()->json(["status" => true, "message" => "Supplier successfully deleted."], 200);
-            } 
-            else {
-                return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
-            }
-        } 
-        catch (Exception $ex) {
-            return response()->json(["status" => false, "message" => $ex->getMessage()], 500);
+        if(SupplierBUS::destroySupplier($id)) {  
+            return response()->json(["status" => true, "message" => "Supplier successfully deleted."], 200);
+        }
+        else {
+            return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
         }
     }
 }

@@ -9,7 +9,8 @@ use Exception;
 
 class ProductBUS
 {
-	public static function getProducts(Request $request) {
+	public static function getProducts(Request $request) 
+	{
 		$products = new Product();
 		if ($request->has("search")) {
 			if ($request->word != "" || $request->status != "") {
@@ -110,13 +111,18 @@ class ProductBUS
 
 	public static function destroyProduct($id) 
 	{
-        $product = Product::findOrFail($id);
-		// delete the product image if it exists
-        if ($product->image) {
-        	if (\File::exists(public_path($product->image))) {
-        		\File::delete(public_path($product->image));
-        	}
-        }
-        return $product->delete();
+        try {
+			$product = Product::findOrFail($id);
+			// delete the product image if it exists
+	        if ($product->image) {
+	        	if (\File::exists(public_path($product->image))) {
+	        		\File::delete(public_path($product->image));
+	        	}
+	        }
+	        return $product->delete();
+		}
+		catch(Exception $ex) {
+			return false;
+		}
 	}
 }

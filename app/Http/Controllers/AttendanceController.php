@@ -2,24 +2,118 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Http\BUS\CategoryBUS;
-use Illuminate\Http\Request;
-use App\Http\Requests\CategoryRequest;
+use App\Models\Attendance;
+use App\Models\Employee;
+use App\Http\BUS\AttendanceBUS;
+use App\Http\BUS\EmployeeBUS;
 
-class CategoryController extends Controller
+use Illuminate\Http\Request;
+
+class AttendanceController extends Controller
 {
     public function __construct()
     {
-        $this->title = "Categories";
+        $this->title = "Attendances";
     }
 
     public function index()
     {
-        return view("categories.index")
+        echo "Here >>>";
+
+        // return view("categories.index")
+        //     ->with('title', $this->title)
+        //     ->with('breadTitle', $this->title);
+    }
+
+    public function takeAttendance()
+    {
+        return view("attendances.take")
             ->with('title', $this->title)
             ->with('breadTitle', $this->title);
     }
+
+    public function takeAttendanceAjax(Request $request)
+    {
+        $page = 1;
+        $per_page = 10;
+
+        // Define the default order
+        $order_field = 'id';
+        $order_sort = 'DESC';
+
+        // Get the request parameters
+        $params = $request->all();
+
+        // Set the current page
+        if(isset($params['pagination']['page']))
+        {
+            $page = $params['pagination']['page'];
+        }
+
+        // Set the number of items
+        if(isset($params['pagination']['perpage']))
+        {
+            $per_page = $params['pagination']['perpage'];
+        }
+
+        // Set the sort order and field
+        if(isset($params['sort']['field']))
+        {
+            $order_field = $params['sort']['field'];
+            $order_sort = $params['sort']['sort'];
+        }
+
+        // Get how many items there should be
+        $total = EmployeeBUS::getEmployees($request)->count();
+        $employees = EmployeeBUS::getEmployees($request)
+            ->with('attendances')
+            ->orderBy($order_field, $order_sort)
+            ->get();
+        $data = [];
+
+        if(!empty($employees)) {
+            foreach($employees as $employee) {
+                // $attendances = $employee->attendances->map(function ($r) {
+                //     return $r->attendance;
+                // });
+                $attendance = $employee->attendances->first(); 
+                $attendanceStatus = $attendance ? $attendance->attendance : null;
+
+                $data[] = [
+                    'id' => $employee->id,
+                    'name' => $employee->name,
+                    'photo' => $employee->photo,
+                    'attendance' => $attendanceStatus
+                ];
+            }
+        }
+
+        $response = [
+            'meta' => [
+                "page" => $page,
+                "pages" => ceil($total / $per_page),
+                "perpage" => $per_page,
+                "total" => $total,
+                "sort" => $order_sort,
+                "field" => $order_field
+            ],
+            'data' => $data
+        ];
+
+        return response()->json($response);
+    }
+
+    public function store(Request $request) 
+    {
+        $attendance = AttendanceBUS::storeAttendance($request);
+        return response()->json($attendance);
+    }
+
+
+
+
+
+    
 
     public function indexAjax(Request $request)
     {
@@ -83,24 +177,14 @@ class CategoryController extends Controller
         return response()->json($response);
     }
 
-    public function create() 
-    {
-        $breadItems = [
-            ['name' => 'Data', 'url' => route('categories.index')],
-            ['name' => 'Add Category', 'url' => null],
-        ];
+   
 
-        return view("categories.create")
-            ->with('title', $this->title)
-            ->with('breadTitle', $this->title)
-            ->with('breadItems', $breadItems);
-    }
 
-    public function store(CategoryRequest $request) 
-    {
-        CategoryBUS::storeCategory($request);
-        return redirect()->route("categories.index")->with("success", "Category successfully created.");
-    }
+    
+
+
+
+
 
     public function edit($id) 
     { 

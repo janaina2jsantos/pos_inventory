@@ -147,17 +147,11 @@ class EmployeeController extends Controller
 
     public function destroy($id) 
     {
-        try {
-            if (EmployeeBUS::destroyEmployee($id)) {  
-                return response()->json(["status" => true, "message" => "Employee successfully deleted."], 200);
-            } 
-            else {
-                return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
-            }
-        } 
-        catch (Exception $ex) {
-            return response()->json(["status" => false, "message" => "An error occurred."], 500);
+        if(EmployeeBUS::destroyEmployee($id)) {  
+            return response()->json(["status" => true, "message" => "Employee successfully deleted."], 200);
+        }
+        else {
+            return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
         }
     }
 }
-

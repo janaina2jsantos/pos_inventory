@@ -81,8 +81,8 @@
 					</span>New Product</a>
 				</div>
 			</div>
-			<!-- filters -->
 			<div class="card-body">
+				<!-- filters -->
 				<div class="mb-7">
 					<div class="row align-items-center">
 						<div class="col-lg-9 col-xl-8">

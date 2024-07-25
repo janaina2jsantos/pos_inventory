@@ -9,7 +9,8 @@ use Exception;
 
 class SupplierBUS
 {
-	public static function getSuppliers(Request $request) {
+	public static function getSuppliers(Request $request) 
+	{
 		$suppliers = new Supplier();
 		if ($request->has("search")) {
 			if ($request->word != "" || $request->status != "") {
@@ -87,6 +88,11 @@ class SupplierBUS
 
 	public static function destroySupplier($id) 
 	{
-        return Supplier::findOrFail($id)->delete();
+        try {
+        	return Supplier::findOrFail($id)->delete();
+		}
+		catch(Exception $ex) {
+			return false;
+		}
 	}
 }

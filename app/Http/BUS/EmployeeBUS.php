@@ -10,7 +10,8 @@ use Exception;
 
 class EmployeeBUS
 {
-	public static function getEmployees(Request $request) {
+	public static function getEmployees(Request $request) 
+	{
 		$employees = new Employee();
 		if ($request->has("search")) {
 			if ($request->word != "" || $request->status != "") {
@@ -121,13 +122,18 @@ class EmployeeBUS
 
 	public static function destroyEmployee($id) 
 	{
-        $employee = Employee::findOrFail($id);
-		// delete the employee photo if it exists
-        if ($employee->photo) {
-        	if (\File::exists(public_path($employee->photo))) {
-        		\File::delete(public_path($employee->photo));
-        	}
-        }
-        return $employee->delete();
+        try {
+			$employee = Employee::findOrFail($id);
+			// delete employee's photo if it exists
+	        if ($employee->photo) {
+	        	if (\File::exists(public_path($employee->photo))) {
+	        		\File::delete(public_path($employee->photo));
+	        	}
+	        }
+	        return $employee->delete();
+		}
+		catch(Exception $ex) {
+			return false;
+		}
 	}
 }

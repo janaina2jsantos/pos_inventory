@@ -68,7 +68,7 @@
 							</ul>
 						</div>
 					</div>
-		
+					
 					<a href="{{ route('advance-salaries.create') }}" class="btn btn-primary font-weight-bolder">
 					<span class="svg-icon svg-icon-md">
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -81,8 +81,8 @@
 					</span>New Advance Salary</a>
 				</div>
 			</div>
-			<!-- filters -->
 			<div class="card-body">
+				<!-- filters -->
 				<div class="mb-7">
 					<div class="row align-items-center">
 						<div class="col-lg-9 col-xl-8">

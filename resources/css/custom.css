@@ -42,3 +42,35 @@
 	background-blend-mode: overlay;
 	background-position-x: 250px;
 }
+.btn-expenses {
+	margin-top: 16px;
+}
+.expenses-info {
+	font-size: 13px!important;
+}
+.blind-link {
+	cursor: default!important;
+}
+#customAlert {
+	display:none; 
+	position: fixed; 
+	top: 180px; 
+	right: 4%; 
+	z-index: 9999; 
+	background-color: #f8d7da; 
+	color: #721c24; 
+	border: 1px solid #f5c6cb; 
+	padding: 15px; 
+	border-radius: 5px;
+}
+/*input number without arrows*/
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  	-webkit-appearance: none;
+  	margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  	-moz-appearance: textfield;
+}

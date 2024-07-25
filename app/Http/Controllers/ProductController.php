@@ -62,14 +62,16 @@ class ProductController extends Controller
             ->get();
         $data = [];
 
+        
+
         if(!empty($products)) {
             foreach($products as $product) {
                 $data[] = [
                     'id' => $product->id,
                     'name' => $product->name,
                     'code' => $product->code,
-                    'selling_price' => '$'.$product->selling_price,
-                    'expire_date' => $product->expire_date->format('d-m-Y'),
+                    'selling_price' => number_format($product->selling_price, 2, ',', '.'),
+                    'expire_date' => $product->expire_date->format('d/m/Y'),
                     'image' => $product->image,
                     'status' => $product->status,
                 ];
@@ -156,16 +158,11 @@ class ProductController extends Controller
 
     public function destroy($id) 
     {
-        try {
-            if (ProductBUS::destroyProduct($id)) {  
-                return response()->json(["status" => true, "message" => "Product successfully deleted."], 200);
-            } 
-            else {
-                return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
-            }
-        } 
-        catch (Exception $ex) {
-            return response()->json(["status" => false, "message" => $ex->getMessage()], 500);
+        if(ProductBUS::destroyProduct($id)) {  
+            return response()->json(["status" => true, "message" => "Product successfully deleted."], 200);
+        }
+        else {
+            return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
         }
     }
 }

@@ -1,8 +1,8 @@
-function getCategories() {
+function getTodayExpenses() {
     $.ajax({
         method: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: '/ajax/categories',
+        url: '/ajax/expenses/today',
         dataType: 'json',
         success: function(response) {
             setUpTable(response);
@@ -14,7 +14,7 @@ function getCategories() {
 }
 
 function setUpTable(data) {
-    var datatable = $('.datatable-categories').KTDatatable({
+    var datatable = $('.datatable-expenses').KTDatatable({
         data: {
             source: data,
             map: function(raw) {
@@ -51,8 +51,17 @@ function setUpTable(data) {
             textAlign: 'center',
         },
         {
-            field: 'name',
-            title: 'Name',
+            field: 'details',
+            title: 'Details',
+            width: 530,
+        },
+        {
+            field: 'amount',
+            title: 'Amount',
+            width: 100,
+            template: function(row) {
+                return '$' + row.amount;
+            }
         },
         {
             field: 'Actions',
@@ -63,7 +72,7 @@ function setUpTable(data) {
             autoHide: false,
             template: function(row) {
                 return '\
-                    <a href="/categories/'+row.id+'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
+                    <a href="/expenses/'+row.id+'/edit" class="btn btn-sm btn-clean btn-icon" title="Edit">\
                         <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -74,82 +83,23 @@ function setUpTable(data) {
                             </svg>\
                         </span>\
                     </a>\
-                    <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete" onclick="deleteCategory('+row.id+');">\
-                        <span class="svg-icon svg-icon-md">\
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
-                                    <rect x="0" y="0" width="24" height="24"/>\
-                                    <path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"/>\
-                                    <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>\
-                                </g>\
-                            </svg>\
-                        </span>\
-                    </a>\
                 ';
             },
         }],
     });
 }
 
-function deleteCategory(id) {
-    Swal.fire({
-        title: 'Are you sure you want to delete this category?',
-        text: 'This action cannot be undone!',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        customClass: "show-order",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: "/categories/"+id+"/delete",
-                type: "DELETE",
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                data: {method: '_DELETE', submit: true}, 
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status) {
-                        Swal.fire(
-                            'Success!',
-                            response.message,
-                            'success'
-                        ).then(function() {
-                            location.reload();
-                        });
-                    }
-                    else {
-                        Swal.fire(
-                            'Error!',
-                            response.message,
-                            'error'
-                        );
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire(
-                        'Error!',
-                        'There was an error while deleting the supplier.',
-                        'error'
-                    );
-                }
-            });
-        }
-    });
-}
-
 $('#kt_datatable_search_query').on('keyup', function() {
     var word = $(this).val();
     $.ajax({
-        url: '/ajax/categories',
+        url: '/ajax/expenses/today',
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data: {'word': word},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-categories").KTDatatable({});
+                var datatable = $(".datatable-expenses").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -166,14 +116,14 @@ $('#kt_datatable_search_query').on('keyup', function() {
 $('#kt_datatable_search_button').on('click', function() {
     var word = $('#kt_datatable_search_query').val();
     $.ajax({
-        url: "/ajax/categories",
+        url: "/ajax/expenses/today",
         method: "GET",
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data: {'search': true, 'word': word},
+        data: {'search': true, 'word': word, 'status': status},
         dataType: "json",
         success: function(response) {
             if(response) {
-                var datatable = $(".datatable-categories").KTDatatable({});
+                var datatable = $(".datatable-expenses").KTDatatable({});
                 datatable.KTDatatable("destroy");
                 setUpTable(response);
             }
@@ -182,11 +132,12 @@ $('#kt_datatable_search_button').on('click', function() {
             }
         },
         error: function(error) {
+            // console.log(error);
             return;
         }
     });
 });
 
 $(document).ready(function() {
-    getCategories();
+    getTodayExpenses();
 });

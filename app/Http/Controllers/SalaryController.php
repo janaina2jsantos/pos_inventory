@@ -121,7 +121,7 @@ class SalaryController extends Controller
             ->first();
 
         if ((int)Carbon::parse($request->month)->format('m') <= (int)$currentMonth) {
-            return redirect()->back()->withErrors(["error" => "The advance can only be paid next month."]);
+            return redirect()->back()->withErrors(["error" => "The advance can only be made for the following month."]);
             die();
         }
 
@@ -136,7 +136,7 @@ class SalaryController extends Controller
             return redirect()->route("advance-salaries.index")->with("success", "Advance successfully paid.");
         }
         else {
-            return redirect()->back()->withErrors(["error" => "There is already an advance for this employee this month."]);
+            return redirect()->back()->withErrors(["error" => "There is already an advance for this employee in this month."]);
         }
     }
 
@@ -174,7 +174,7 @@ class SalaryController extends Controller
         $pctm = round(($advPayment / (int)$employee->salary) * 100, 2);
 
         if ((int)Carbon::parse($request->month)->format('m') <= (int)$currentMonth) {
-            return redirect()->back()->withErrors(["error" => "The advance can only be paid next month."]);
+            return redirect()->back()->withErrors(["error" => "The advance can only be made for the following month."]);
             die();
         }
 
@@ -189,16 +189,11 @@ class SalaryController extends Controller
 
     public function destroy($id) 
     {
-        try {
-            if (AdvanceSalaryBUS::destroyAdvanceSalary($id)) {  
-                return response()->json(["status" => true, "message" => "Advance successfully deleted."], 200);
-            } 
-            else {
-                return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
-            }
-        } 
-        catch (Exception $ex) {
-            return response()->json(["status" => false, "message" => $ex->getMessage()], 500);
+        if(AdvanceSalaryBUS::destroyAdvanceSalary($id)) {  
+            return response()->json(["status" => true, "message" => "Advance successfully deleted."], 200);
+        }
+        else {
+            return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
         }
     }
 
@@ -208,7 +203,6 @@ class SalaryController extends Controller
         $date = new DateTime();
         $date->modify('+1 month');
         $month = $date->format('Y-m');
-        
         $hasAdvSalary = AdvanceSalary::where("month", "LIKE", "%{$month}%")
             ->where("employee_id", $advSalary->employee_id)
             ->first();
@@ -219,7 +213,7 @@ class SalaryController extends Controller
             return response()->json(["status" => true, "message" => "Advance successfully paid."], 200);
         }
         else {
-            return response()->json(["status" => false, "message" => "There is already an advance for this employee this month."], 400);  
+            return response()->json(["status" => false, "message" => "There is already an advance for this employee in this month."], 400);  
         }
     }
 
@@ -287,8 +281,7 @@ class SalaryController extends Controller
                 $month = date('Y-m', strtotime('-1 month'));
                 $advance = $employee->advanceSalaries()
                     ->where("month", "LIKE", "%{$month}%")
-                    ->pluck("advance_salary")
-                    ->map(function($date) {
+                    ->pluck("advance_salary")->map(function($date) {
                         return number_format($date, 2, ',', '.');
                     });
 

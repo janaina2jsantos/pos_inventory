@@ -9,7 +9,8 @@ use Exception;
 
 class CategoryBUS
 {
-	public static function getCategories(Request $request) {
+	public static function getCategories(Request $request) 
+	{
 		$categories = new Category();
 		if ($request->has("search")) {
 			if ($request->word != "" || $request->status != "") {
@@ -44,6 +45,11 @@ class CategoryBUS
 
 	public static function destroyCategory($id) 
 	{
-        return Category::findOrFail($id)->delete();
+        try {
+			return Category::findOrFail($id)->delete();
+		}
+		catch(Exception $ex) {
+			return false;
+		}
 	}
 }

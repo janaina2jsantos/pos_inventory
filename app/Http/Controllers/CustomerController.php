@@ -147,16 +147,11 @@ class CustomerController extends Controller
 
     public function destroy($id) 
     {
-        try {
-            if (CustomerBUS::destroyCustomer($id)) {  
-                return response()->json(["status" => true, "message" => "Customer successfully deleted."], 200);
-            } 
-            else {
-                return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
-            }
-        } 
-        catch (Exception $ex) {
-            return response()->json(["status" => false, "message" => $ex->getMessage()], 500);
+        if(CustomerBUS::destroyCustomer($id)) {  
+            return response()->json(["status" => true, "message" => "Customer successfully deleted."], 200);
+        }
+        else {
+            return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 
         }
     }
 }
