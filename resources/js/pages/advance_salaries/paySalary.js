@@ -101,7 +101,7 @@ function setUpTable(data) {
                     return '<img src="' + row.photo + '" alt="Employee Photo" width="90%" />';
                 }
                 else {
-                    return '<img src="../../../dist/assets/img/users/default_avatar.jpg" alt="Employee Photo" width="85%" />';
+                    return '<img src="../../../dist/assets/img/misc/default_avatar.jpg" alt="Employee Photo" width="85%" />';
                 }
             },
         },    

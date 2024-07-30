@@ -6,8 +6,8 @@ use App\Models\Attendance;
 use App\Models\Employee;
 use App\Http\BUS\AttendanceBUS;
 use App\Http\BUS\EmployeeBUS;
-
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
@@ -18,11 +18,75 @@ class AttendanceController extends Controller
 
     public function index()
     {
-        echo "Here >>>";
+        return view("attendances.index")
+            ->with('title', $this->title)
+            ->with('breadTitle', $this->title);
+    }
 
-        // return view("categories.index")
-        //     ->with('title', $this->title)
-        //     ->with('breadTitle', $this->title);
+    public function indexAjax(Request $request)
+    {
+        $page = 1;
+        $per_page = 10;
+
+        // Define the default order
+        $order_field = 'id';
+        $order_sort = 'DESC';
+
+        // Get the request parameters
+        $params = $request->all();
+
+        // Set the current page
+        if(isset($params['pagination']['page']))
+        {
+            $page = $params['pagination']['page'];
+        }
+
+        // Set the number of items
+        if(isset($params['pagination']['perpage']))
+        {
+            $per_page = $params['pagination']['perpage'];
+        }
+
+        // Set the sort order and field
+        if(isset($params['sort']['field']))
+        {
+            $order_field = $params['sort']['field'];
+            $order_sort = $params['sort']['sort'];
+        }
+
+        // Get how many items there should be
+        $total = AttendanceBUS::getAttendances($request)->count();
+        $attendances = AttendanceBUS::getAttendances($request)
+            ->with('employee')
+            ->orderBy($order_field, $order_sort)
+            ->get()
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('Y-m-d');
+            });
+        $data = [];
+
+        if (!empty($attendances)) {
+            foreach ($attendances as $date => $groupedAttendances) {
+                $data[] = [
+                    'count' => $groupedAttendances->count(),
+                    'date' => Carbon::parse($date)->format('d/m/Y')
+                ];
+            }
+        }
+
+        $response = [
+            'meta' => [
+                "page" => $page,
+                "pages" => ceil($total / $per_page),
+                "perpage" => $per_page,
+                "total" => $total,
+                "sort" => $order_sort,
+                "field" => $order_field
+            ],
+            'data' => $data
+        ];
+
+        return response()->json($response);
     }
 
     public function takeAttendance()
@@ -66,6 +130,7 @@ class AttendanceController extends Controller
         // Get how many items there should be
         $total = EmployeeBUS::getEmployees($request)->count();
         $employees = EmployeeBUS::getEmployees($request)
+            ->where('status', 1)
             ->with('attendances')
             ->orderBy($order_field, $order_sort)
             ->get();
@@ -73,10 +138,9 @@ class AttendanceController extends Controller
 
         if(!empty($employees)) {
             foreach($employees as $employee) {
-                // $attendances = $employee->attendances->map(function ($r) {
-                //     return $r->attendance;
-                // });
-                $attendance = $employee->attendances->first(); 
+                $attendance = $employee->attendances()
+                    ->whereDate('created_at', Carbon::today())
+                    ->first();
                 $attendanceStatus = $attendance ? $attendance->attendance : null;
 
                 $data[] = [
@@ -109,55 +173,64 @@ class AttendanceController extends Controller
         return response()->json($attendance);
     }
 
+    public function update(Request $request, $id) 
+    {
+        $attendance = AttendanceBUS::updateAttendance($request, $id);
+        return response()->json($attendance);
+    }
 
+    public function showAttendances($date) 
+    { 
+        $breadItems = [
+            ['name' => 'Data', 'url' => route('attendances.index')],
+            ['name' => 'Attendances Details', 'url' => null],
+        ];
 
+        return view("attendances.show")
+            ->with('date', $date)
+            ->with('title', $this->title)
+            ->with('breadTitle', $this->title)
+            ->with('breadItems', $breadItems);
+    }
 
+    public function editAttendances($date) 
+    { 
+        $breadItems = [
+            ['name' => 'Data', 'url' => route('attendances.index')],
+            ['name' => 'Edit Attendances', 'url' => null],
+        ];
 
-    
+        return view("attendances.edit")
+            ->with('date', $date)
+            ->with('title', $this->title)
+            ->with('breadTitle', $this->title)
+            ->with('breadItems', $breadItems);
+    }
 
-    public function indexAjax(Request $request)
+    public function editAttendancesAjax($date)
     {
         $page = 1;
         $per_page = 10;
 
         // Define the default order
         $order_field = 'id';
-        $order_sort = 'DESC';
-
-        // Get the request parameters
-        $params = $request->all();
-
-        // Set the current page
-        if(isset($params['pagination']['page']))
-        {
-            $page = $params['pagination']['page'];
-        }
-
-        // Set the number of items
-        if(isset($params['pagination']['perpage']))
-        {
-            $per_page = $params['pagination']['perpage'];
-        }
-
-        // Set the sort order and field
-        if(isset($params['sort']['field']))
-        {
-            $order_field = $params['sort']['field'];
-            $order_sort = $params['sort']['sort'];
-        }
+        $order_sort = 'ASC';
 
         // Get how many items there should be
-        $total = CategoryBUS::getCategories($request)->count();
-        $categories = CategoryBUS::getCategories($request)
+        $total = AttendanceBUS::editAttendances($date)->count();
+        $attendances = AttendanceBUS::editAttendances($date)
+            ->with('employee')
             ->orderBy($order_field, $order_sort)
             ->get();
         $data = [];
 
-        if(!empty($categories)) {
-            foreach($categories as $category) {
+        if(!empty($attendances)) {
+            foreach($attendances as $attendance) {
                 $data[] = [
-                    'id' => $category->id,
-                    'name' => $category->name,
+                    'id' => $attendance->id,
+                    'name' => $attendance->employee->name,
+                    'photo' => $attendance->employee->photo,
+                    'attendance' => $attendance->attendance ? $attendance->attendance : null
                 ];
             }
         }
@@ -177,40 +250,10 @@ class AttendanceController extends Controller
         return response()->json($response);
     }
 
-   
-
-
-    
-
-
-
-
-
-    public function edit($id) 
-    { 
-        $category = Category::findOrFail($id); 
-        $breadItems = [
-            ['name' => 'Data', 'url' => route('categories.index')],
-            ['name' => 'Edit Category', 'url' => null],
-        ];
-
-        return view("categories.edit")
-            ->with('category', $category)
-            ->with('title', $this->title)
-            ->with('breadTitle', $this->title)
-            ->with('breadItems', $breadItems);
-    }
-
-    public function update(CategoryRequest $request, $id) 
-    {
-        CategoryBUS::updateCategory($request, $id);
-        return redirect()->route("categories.index")->with("success", "Category successfully updated.");
-    }
-
     public function destroy($id) 
     {
-        if(CategoryBUS::destroyCategory($id)) {  
-            return response()->json(["status" => true, "message" => "Category successfully deleted."], 200);
+        if(AttendanceBUS::destroyAttendance($id)) {  
+            return response()->json(["status" => true, "message" => "Attendance successfully deleted."], 200);
         }
         else {
             return response()->json(["status" => false, "message" => "This action couldn't be completed."], 400); 

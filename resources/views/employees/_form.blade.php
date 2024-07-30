@@ -185,10 +185,10 @@
 					<div class="col-lg-9 col-xl-6">
 						<div class="image-input image-input-outline" id="kt_image_1">
 							@isset($employee)
-								<div class="image-input-wrapper" style="background-image: url({{ isset($employee->photo) ? asset($employee->photo) : asset('dist/assets/img/users/default_avatar.jpg') }});">
+								<div class="image-input-wrapper" style="background-image: url({{ isset($employee->photo) ? asset($employee->photo) : asset('dist/assets/img/misc/default_avatar.jpg') }});">
 								</div>
 							@else
-								<div class="image-input-wrapper" style="background-image: url({{ asset('dist/assets/img/users/default_avatar.jpg') }})">
+								<div class="image-input-wrapper" style="background-image: url({{ asset('dist/assets/img/misc/default_avatar.jpg') }})">
 								</div>
 					        @endisset
 							<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
@@ -205,7 +205,7 @@
 				@else
 					<div class="col-lg-9 col-xl-6">
 						<div class="image-input image-input-outline" id="kt_image_1">
-							<div class="image-input-wrapper" style="background-image: url({{ isset($employee->photo) ? asset($employee->photo) : asset('dist/assets/img/users/default_avatar.jpg') }});">
+							<div class="image-input-wrapper" style="background-image: url({{ isset($employee->photo) ? asset($employee->photo) : asset('dist/assets/img/misc/default_avatar.jpg') }});">
 							</div>
 						</div>
 					</div>

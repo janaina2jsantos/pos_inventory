@@ -103,6 +103,22 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/attendances/take', 'AttendanceController@takeAttendance')->name('attendances.take');
     Route::get('/ajax/attendances/take', 'AttendanceController@takeAttendanceAjax')->name('attendances.take.ajax');
     Route::post('/attendances/{id}/create', 'AttendanceController@store')->name('attendances.store');
+    Route::put('/attendances/{id}/edit/single', 'AttendanceController@update')->name('attendances.update');
+    Route::get('/attendances/{date}/show', 'AttendanceController@showAttendances')->name('attendances.show');
+    Route::get('/ajax/attendances/{date}/show', 'AttendanceController@editAttendancesAjax')->name('attendances.show.ajax');
+    Route::get('/attendances/{date}/edit', 'AttendanceController@editAttendances')->name('attendances.edit');
+    Route::get('/ajax/attendances/{date}/edit', 'AttendanceController@editAttendancesAjax')->name('attendances.edit.ajax');
+    Route::delete('/attendances/{id}/delete', 'AttendanceController@destroy')->name('attendances.destroy');
+
+    // settings 
+    Route::get('/settings', 'CompanyController@edit')->name('settings.edit');
+    Route::put('/settings', 'CompanyController@update')->name('settings.update');
+
+
+    // 00:00
+
+
+
 });
 
 require __DIR__.'/auth.php';

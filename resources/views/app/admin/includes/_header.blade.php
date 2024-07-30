@@ -259,7 +259,7 @@
 					<div class="offcanvas-content pr-5 mr-n5">
 						<div class="d-flex align-items-center mt-5">
 							<div class="symbol symbol-100 mr-5">
-								<div class="symbol-label" style="background-image:url({{ asset('dist/assets/img/users/default_avatar.jpg') }})"></div>
+								<div class="symbol-label" style="background-image:url({{ asset('dist/assets/img/misc/default_avatar.jpg') }})"></div>
 								<i class="symbol-badge bg-success"></i>
 							</div>
 							<div class="d-flex flex-column">

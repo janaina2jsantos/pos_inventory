@@ -79,7 +79,7 @@ function setUpTable(data) {
                     return '<img src="' + row.image + '" alt="Product Image" width="90%" />';
                 }
                 else {
-                    return '<img src="../../../dist/assets/img/products/default_image.png" alt="Product Image" width="85%" />';
+                    return '<img src="../../../dist/assets/img/misc/default_image.png" alt="Product Image" width="85%" />';
                 }
             },
         },

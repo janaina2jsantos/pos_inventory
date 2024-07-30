@@ -95,7 +95,6 @@
 										</span>
 									</div>
 								</div>
-
 								<div class="col-md-6 my-2 my-md-0">
 									<div class="d-flex align-items-center">
 										<label class="mr-3 mb-0 d-none d-md-block">Month:</label>

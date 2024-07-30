@@ -40,7 +40,7 @@ class EmployeeBUS
 	{
 		$salary = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->salary)));
 
-		// upload
+		// upload image
 		if ((isset($_FILES['photo'])) && ($_FILES['photo']['type'] != "")) {
 			if(!is_dir("dist/assets/img/employees/")) {
 				mkdir("dist/assets/img/employees/");
@@ -81,7 +81,7 @@ class EmployeeBUS
 		$salary = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->salary)));
 		$employee = Employee::findOrFail($id);
 
-		// upload
+		// upload image
 		if ((isset($_FILES['photo'])) && ($_FILES['photo']['type'] != "")) {
 	        if ($employee->photo) {
 				// delete the old photo if it exists

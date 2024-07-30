@@ -27,6 +27,10 @@ php artisan db:seed --class=UserSeeder
 php artisan db:seed --class=EmployeeSeeder
 
 ```
+```bash
+php artisan db:seed --class=SettingSeeder
+
+```
 - Don't forget to run commands like npm install and npm run dev.
 - Enjoy the project!
 

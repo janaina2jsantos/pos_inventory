@@ -6,12 +6,18 @@
 			    <span id="alertMessage"></span>
 			</div>
 			<div class="card-header flex-wrap border-0 pt-6 pb-0">
-				<div class="card-title">
-					<h3 class="card-label">Take Attendance</h3>
-				</div>
+				@isset($breadItems)
+					@foreach($breadItems as $item)
+					    @if($item['name'] !== 'Data')
+					        <h3 class="card-title">{{ $item['name'] }}</h3>
+					    @endif
+					@endforeach
+				@else
+					<h3 class="card-title">{{ $breadTitle }}</h3>
+				@endisset
 			</div>
 			<div class="flex-wrap ml-8">
-				<a class="btn btn-info blind-link"><strong>Today: {{ \Carbon\Carbon::now()->format('D') }} {{ \Carbon\Carbon::now()->format('d/m/Y') }}</strong></a>
+				<a class="btn btn-info blind-link"><strong>Date: {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</strong></a>
 			</div>
 			<div class="card-body">
 				<!--datatable-->
@@ -22,5 +28,5 @@
 @stop
 
 @section('scripts')
-    <script src="{{ asset('js/pages/attendances/take.js') }}"></script>
+    <script src="{{ asset('js/pages/attendances/show.js') }}"></script>
 @stop

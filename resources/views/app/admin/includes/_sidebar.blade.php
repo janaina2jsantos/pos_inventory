@@ -392,19 +392,19 @@
 					<div class="menu-submenu">
 						<ul class="menu-subnav">
 							<li class="menu-item" aria-haspopup="true">
-								<a href="{{ route('attendances.index') }}" class="menu-link">
-									<i class="menu-bullet menu-bullet-dot">
-										<span></span>
-									</i>
-									<span class="menu-text">All Attendances</span>
-								</a>
-							</li>
-							<li class="menu-item" aria-haspopup="true">
 								<a href="{{ route('attendances.take') }}" class="menu-link">
 									<i class="menu-bullet menu-bullet-dot">
 										<span></span>
 									</i>
 									<span class="menu-text">Take Attendance</span>
+								</a>
+							</li>
+							<li class="menu-item" aria-haspopup="true">
+								<a href="{{ route('attendances.index') }}" class="menu-link">
+									<i class="menu-bullet menu-bullet-dot">
+										<span></span>
+									</i>
+									<span class="menu-text">All Attendances</span>
 								</a>
 							</li>
 						</ul>
@@ -428,19 +428,11 @@
 					<div class="menu-submenu">
 						<ul class="menu-subnav">
 							<li class="menu-item" aria-haspopup="true">
-								<a href="#" class="menu-link">
+								<a href="{{ route('settings.edit') }}" class="menu-link">
 									<i class="menu-bullet menu-bullet-dot">
 										<span></span>
 									</i>
-									<span class="menu-text">First</span>
-								</a>
-							</li>
-							<li class="menu-item" aria-haspopup="true">
-								<a href="#" class="menu-link">
-									<i class="menu-bullet menu-bullet-dot">
-										<span></span>
-									</i>
-									<span class="menu-text">Second</span>
+									<span class="menu-text">Edit Settings</span>
 								</a>
 							</li>
 						</ul>

@@ -38,7 +38,7 @@ class ProductBUS
 		$buyingPrice = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->buying_price)));
 		$sellingPrice = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->selling_price)));
 
-		// upload
+		// upload image
 		if ((isset($_FILES['image'])) && ($_FILES['image']['type'] != "")) {
 			if(!is_dir("dist/assets/img/products/")) {
 				mkdir("dist/assets/img/products/");
@@ -75,7 +75,7 @@ class ProductBUS
 		$sellingPrice = floatval(str_replace(',', '.', preg_replace('/[^\d,]/', '', $request->selling_price)));
 		$product = Product::findOrFail($id);
 
-		// upload
+		// upload image
 		if ((isset($_FILES['image'])) && ($_FILES['image']['type'] != "")) {
 	        if ($product->image) {
 				// delete the old image if it exists

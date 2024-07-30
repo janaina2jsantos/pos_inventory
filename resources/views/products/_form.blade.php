@@ -142,10 +142,10 @@
 					<div class="col-lg-9 col-xl-6">
 						<div class="image-input image-input-outline" id="kt_image_1">
 							@isset($product)
-								<div class="image-input-wrapper" style="background-image: url({{ isset($product->image) ? asset($product->image) : asset('dist/assets/img/products/default_image.png') }});">
+								<div class="image-input-wrapper" style="background-image: url({{ isset($product->image) ? asset($product->image) : asset('dist/assets/img/misc/default_image.png') }});">
 								</div>
 							@else
-								<div class="image-input-wrapper" style="background-image: url({{ asset('dist/assets/img/products/default_image.png') }})">
+								<div class="image-input-wrapper" style="background-image: url({{ asset('dist/assets/img/misc/default_image.png') }})">
 								</div>
 					        @endisset
 							<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">

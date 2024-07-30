@@ -38,7 +38,7 @@ class CustomerBUS
 
 	public static function storeCustomer(CustomerRequest $request) 
 	{
-		// upload
+		// upload image
 		if ((isset($_FILES['photo'])) && ($_FILES['photo']['type'] != "")) {
 			if(!is_dir("dist/assets/img/customers/")) {
 				mkdir("dist/assets/img/customers/");
@@ -78,7 +78,7 @@ class CustomerBUS
 	{
 		$customer = Customer::findOrFail($id);
 
-		// upload
+		// upload image
 		if ((isset($_FILES['photo'])) && ($_FILES['photo']['type'] != "")) {
 	        if ($customer->photo) {
 				// delete the old photo if it exists

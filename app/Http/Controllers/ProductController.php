@@ -61,9 +61,7 @@ class ProductController extends Controller
             ->orderBy($order_field, $order_sort)
             ->get();
         $data = [];
-
         
-
         if(!empty($products)) {
             foreach($products as $product) {
                 $data[] = [
